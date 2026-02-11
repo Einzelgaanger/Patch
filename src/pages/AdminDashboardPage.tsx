@@ -31,8 +31,8 @@ export default function AdminDashboardPage() {
   }, []);
 
   const checkAuth = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) navigate("/admin");
+    const isAdmin = localStorage.getItem("admin_authenticated");
+    if (!isAdmin) navigate("/admin");
   };
 
   const fetchResponses = async () => {
@@ -50,9 +50,26 @@ export default function AdminDashboardPage() {
     }
   };
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
+  const handleLogout = () => {
+    localStorage.removeItem("admin_authenticated");
     navigate("/admin");
+  };
+
+  const exportCSV = () => {
+    const headers = ["Name", "Email", "House", "Admission Year", "Graduation Year", "Prefect", "Submitted"];
+    const rows = filteredResponses.map((r) => [
+      r.full_name, r.email || "", r.house, r.admission_year, r.graduation_year,
+      r.was_prefect ? "Yes" : "No", new Date(r.created_at).toLocaleDateString(),
+    ]);
+    const csv = [headers, ...rows].map((row) => row.map((v) => `"${v}"`).join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `responses-${new Date().toISOString().split("T")[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success("CSV exported!");
   };
 
   const filteredResponses = responses.filter((r) =>
@@ -111,6 +128,9 @@ export default function AdminDashboardPage() {
                   className="pl-9 w-64"
                 />
               </div>
+              <Button variant="outline" size="sm" onClick={exportCSV} className="gap-1">
+                <Download className="h-4 w-4" /> Export CSV
+              </Button>
             </div>
           </CardHeader>
           <CardContent>

@@ -1,12 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Lock, Mail, Loader2 } from "lucide-react";
+import { Lock, Loader2 } from "lucide-react";
+
+const ADMIN_EMAIL = "admin@nairobischool.com";
+const ADMIN_PASSWORD = "NairobiSchool2026!";
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState("");
@@ -14,24 +16,20 @@ export default function AdminLoginPage() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) navigate("/admin/dashboard");
-    });
-  }, [navigate]);
-
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) throw error;
+
+    // Hardcoded admin credentials check
+    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+      localStorage.setItem("admin_authenticated", "true");
+      toast.success("Welcome, Admin!");
       navigate("/admin/dashboard");
-    } catch (error: any) {
-      toast.error(error.message || "Login failed");
-    } finally {
-      setLoading(false);
+    } else {
+      toast.error("Invalid credentials");
     }
+
+    setLoading(false);
   };
 
   return (
@@ -39,7 +37,7 @@ export default function AdminLoginPage() {
       <section className="min-h-[80vh] flex items-center justify-center py-20">
         <Card className="w-full max-w-md border-0 card-elevated">
           <CardHeader className="text-center">
-            <Lock className="h-12 w-12 text-accent mx-auto mb-4" />
+            <Lock className="h-12 w-12 text-gold mx-auto mb-4" />
             <CardTitle className="font-display text-2xl">Admin Login</CardTitle>
           </CardHeader>
           <CardContent>
@@ -63,10 +61,13 @@ export default function AdminLoginPage() {
                 />
               </div>
               <Button type="submit" variant="navy" className="w-full" disabled={loading}>
-                {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Mail className="h-4 w-4" />}
+                {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Lock className="h-4 w-4" />}
                 Sign In
               </Button>
             </form>
+            <p className="text-xs text-muted-foreground text-center mt-4">
+              Email: admin@nairobischool.com / Password: NairobiSchool2026!
+            </p>
           </CardContent>
         </Card>
       </section>

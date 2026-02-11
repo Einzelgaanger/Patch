@@ -1,5 +1,6 @@
+import type { Variants } from "framer-motion";
 
-export const fadeIn = (direction: "up" | "down" | "left" | "right", delay: number) => {
+export const fadeIn = (direction: "up" | "down" | "left" | "right", delay: number): Variants => {
     return {
         hidden: {
             y: direction === "up" ? 40 : direction === "down" ? -40 : 0,
@@ -11,16 +12,16 @@ export const fadeIn = (direction: "up" | "down" | "left" | "right", delay: numbe
             x: 0,
             opacity: 1,
             transition: {
-                type: "spring",
+                type: "spring" as const,
                 duration: 1.25,
                 delay: delay,
-                ease: [0.25, 0.25, 0.25, 0.75],
+                ease: [0.25, 0.25, 0.25, 0.75] as [number, number, number, number],
             },
         },
     };
 };
 
-export const staggerContainer = (staggerChildren: number, delayChildren: number) => {
+export const staggerContainer = (staggerChildren: number, delayChildren: number): Variants => {
     return {
         hidden: {},
         show: {
@@ -32,7 +33,7 @@ export const staggerContainer = (staggerChildren: number, delayChildren: number)
     };
 };
 
-export const zoomIn = (delay: number, duration: number) => {
+export const zoomIn = (delay: number, duration: number): Variants => {
     return {
         hidden: {
             scale: 0,
@@ -42,16 +43,16 @@ export const zoomIn = (delay: number, duration: number) => {
             scale: 1,
             opacity: 1,
             transition: {
-                type: "tween",
+                type: "tween" as const,
                 delay: delay,
                 duration: duration,
-                ease: "easeOut",
+                ease: "easeOut" as const,
             },
         },
     };
 };
 
-export const slideIn = (direction: "up" | "down" | "left" | "right", type: string, delay: number, duration: number) => {
+export const slideIn = (direction: "up" | "down" | "left" | "right", type: string, delay: number, duration: number): Variants => {
     return {
         hidden: {
             x: direction === "left" ? "-100%" : direction === "right" ? "100%" : 0,
@@ -61,10 +62,10 @@ export const slideIn = (direction: "up" | "down" | "left" | "right", type: strin
             x: 0,
             y: 0,
             transition: {
-                type: type,
+                type: type as "spring" | "tween",
                 delay: delay,
                 duration: duration,
-                ease: "easeOut",
+                ease: "easeOut" as const,
             },
         },
     };
