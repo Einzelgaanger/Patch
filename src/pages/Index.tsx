@@ -6,15 +6,10 @@ import {
   BookOpen,
   Users,
   Trophy,
-  GraduationCap,
   ArrowRight,
-  Clock,
-  Building2,
   Quote,
   ChevronRight,
-  Play,
   Star,
-  Scroll
 } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { fadeIn, staggerContainer } from "@/lib/motion";
@@ -42,7 +37,6 @@ export default function Index() {
 
         {/* --- CINEMATIC HERO --- */}
         <section className="relative h-screen min-h-[900px] flex items-center justify-center overflow-hidden">
-          {/* Parallax Background */}
           <motion.div
             className="absolute inset-0 z-0"
             style={{ y: heroY, opacity: heroOpacity }}
@@ -56,7 +50,6 @@ export default function Index() {
             />
           </motion.div>
 
-          {/* Content */}
           <div className="relative z-30 container mx-auto px-4 text-center mt-20">
             <motion.div
               variants={staggerContainer(0.2, 0.1)}
@@ -65,14 +58,12 @@ export default function Index() {
               viewport={{ once: true }}
               className="max-w-6xl mx-auto"
             >
-              {/* Badge */}
               <motion.div variants={fadeIn("down", 0.5)} className="flex justify-center mb-8">
                 <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-primary-foreground text-xs font-bold tracking-[0.3em] uppercase">
                   <Star className="w-3 h-3 text-accent" /> Est. 1902
                 </span>
               </motion.div>
 
-              {/* Main Title - Huge Typography */}
               <motion.h1
                 variants={fadeIn("up", 0.5)}
                 className="font-display text-7xl md:text-9xl font-bold text-white leading-[0.9] tracking-tighter mb-8 drop-shadow-2xl"
@@ -91,7 +82,6 @@ export default function Index() {
                 <span className="font-semibold text-accent"> Nairobi School</span>.
               </motion.p>
 
-              {/* CTAs */}
               <motion.div
                 variants={fadeIn("up", 0.9)}
                 className="flex flex-col sm:flex-row items-center justify-center gap-6"
@@ -111,7 +101,6 @@ export default function Index() {
             </motion.div>
           </div>
 
-          {/* Scroll Indicator */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -119,15 +108,13 @@ export default function Index() {
             className="absolute bottom-12 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-4"
           >
             <span className="text-white/50 text-xs tracking-widest uppercase">Scroll to Discover</span>
-            <div className="w-[1px] h-16 bg-gradient-to-b from-gold to-transparent" />
+            <div className="w-[1px] h-16 bg-gradient-to-b from-accent to-transparent" />
           </motion.div>
         </section>
-
 
         {/* --- BENTO GRID FEATURES --- */}
         <section className="py-24 lg:py-32 px-4 bg-secondary relative">
           <div className="absolute inset-0 bg-dots opacity-60 pointer-events-none" />
-
           <div className="container mx-auto relative">
             <div className="mb-16 text-center max-w-3xl mx-auto">
               <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6">The Patch Chronicles</h2>
@@ -138,10 +125,7 @@ export default function Index() {
               </p>
             </div>
 
-            {/* BENTO GRID */}
             <div className="grid grid-cols-1 md:grid-cols-3 md:grid-rows-2 gap-6 h-auto md:h-[800px]">
-
-              {/* Large Cell: The Book Project */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -150,7 +134,6 @@ export default function Index() {
               >
                 <div className="absolute inset-0 bg-primary/80 mix-blend-multiply z-10 transition-opacity duration-500 group-hover:opacity-90" />
                 <img src={heroImage} alt="Nairobi School — The Commemorative Book" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-
                 <div className="relative z-20 p-12 h-full flex flex-col justify-between">
                   <div>
                     <div className="inline-flex p-3 rounded-xl bg-accent/20 backdrop-blur-md mb-6 border border-accent/30">
@@ -162,7 +145,6 @@ export default function Index() {
                       Featuring never-before-seen photos, alumni interviews, and the complete history of the school.
                     </p>
                   </div>
-
                   <div>
                     <Link to="/questionnaire">
                       <Button variant="hero" className="rounded-xl px-8 py-6 text-lg font-bold">
@@ -173,7 +155,6 @@ export default function Index() {
                 </div>
               </motion.div>
 
-              {/* Top Right: Stats Card (Gold) */}
               <motion.div
                 initial={{ opacity: 0, x: 20 }}
                 whileInView={{ opacity: 1, x: 0 }}
@@ -189,7 +170,6 @@ export default function Index() {
                 <p className="text-primary/70 mt-4 text-sm">From 1902 to Present Day.</p>
               </motion.div>
 
-              {/* Bottom Right: Houses (Navy) */}
               <motion.div
                 initial={{ opacity: 0, x: 20 }}
                 whileInView={{ opacity: 1, x: 0 }}
@@ -207,7 +187,6 @@ export default function Index() {
                   Explore Houses <ArrowRight className="ml-2 w-4 h-4" />
                 </Link>
               </motion.div>
-
             </div>
           </div>
         </section>
@@ -226,7 +205,6 @@ export default function Index() {
             </div>
           </div>
         </section>
-
 
         {/* --- ROLLING TIMELINE TEASER --- */}
         <section className="py-24 lg:py-32 bg-background overflow-hidden">
@@ -247,7 +225,6 @@ export default function Index() {
                 </Button>
               </Link>
             </div>
-
             <div className="md:w-1/2 relative">
               <div className="absolute inset-0 bg-accent/20 rounded-full blur-3xl transform translate-x-10 translate-y-10" />
               <div className="relative z-10 grid grid-cols-2 gap-4">
