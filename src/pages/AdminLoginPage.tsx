@@ -39,7 +39,7 @@ export default function AdminLoginPage() {
       <section className="min-h-[80vh] flex items-center justify-center py-20">
         <Card className="w-full max-w-md border-0 card-elevated">
           <CardHeader className="text-center">
-            <Lock className="h-12 w-12 text-gold mx-auto mb-4" />
+            <Lock className="h-12 w-12 text-accent mx-auto mb-4" />
             <CardTitle className="font-display text-2xl">Admin Login</CardTitle>
           </CardHeader>
           <CardContent>

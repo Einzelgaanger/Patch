@@ -104,11 +104,11 @@ export default function QuestionnairePage() {
 
   return (
     <Layout>
-      <div className="min-h-screen pt-24 pb-20 bg-cream relative overflow-hidden">
+      <div className="min-h-screen pt-24 pb-20 bg-background relative overflow-hidden">
         {/* Background Elements */}
-        <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5 pointer-events-none" />
-        <div className="absolute top-20 right-0 w-96 h-96 bg-gold/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-navy/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-0 left-0 w-full h-full bg-dots opacity-40 pointer-events-none" />
+        <div className="absolute top-20 right-0 w-96 h-96 bg-accent/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-3xl pointer-events-none" />
 
         <div className="container mx-auto px-4 relative z-10">
           <motion.div
@@ -118,17 +118,17 @@ export default function QuestionnairePage() {
             className="relative max-w-4xl mx-auto"
           >
             <div className="text-center mb-12">
-              <h1 className="font-display text-4xl md:text-5xl font-bold text-navy mb-4">Share Your Story</h1>
-              <p className="text-navy/60 text-lg max-w-2xl mx-auto">
+              <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-4">Share Your Story</h1>
+              <p className="text-foreground/60 text-lg max-w-2xl mx-auto">
                 Your memories are the bricks that build our legacy. Help us document the true spirit of the Patch.
               </p>
             </div>
 
             {/* Progress Steps */}
             <div className="flex justify-between items-center mb-12 relative px-4 md:px-12">
-              <div className="absolute left-0 top-1/2 w-full h-1 bg-navy/10 -z-10" />
+              <div className="absolute left-0 top-1/2 w-full h-1 bg-primary/10 -z-10" />
               <div 
-                className="absolute left-0 top-1/2 h-1 bg-gold -z-10 transition-all duration-500 ease-in-out"
+                className="absolute left-0 top-1/2 h-1 bg-accent -z-10 transition-all duration-500 ease-in-out"
                 style={{ width: `${((currentStep - 1) / (steps.length - 1)) * 100}%` }}
               />
               
@@ -137,13 +137,13 @@ export default function QuestionnairePage() {
                   <div
                     className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 border-4 ${
                       currentStep >= step.id
-                        ? "bg-gold border-gold text-navy shadow-lg scale-110"
-                        : "bg-white border-navy/10 text-navy/30"
+                        ? "bg-accent border-accent text-primary shadow-lg scale-110"
+                        : "bg-white border-primary/10 text-foreground/30"
                     }`}
                   >
                     <step.icon className="w-5 h-5" />
                   </div>
-                  <span className="text-xs font-medium text-navy/70">{step.title}</span>
+                  <span className="text-xs font-medium text-foreground/70">{step.title}</span>
                 </div>
               ))}
             </div>
@@ -163,7 +163,7 @@ export default function QuestionnairePage() {
                           className="space-y-6"
                         >
                           <CardHeader>
-                            <CardTitle className="font-display text-navy">Personal Info</CardTitle>
+                            <CardTitle className="font-display text-foreground">Personal Info</CardTitle>
                             <CardDescription>Tell us how we can reach you.</CardDescription>
                           </CardHeader>
                           <FormField
@@ -217,7 +217,7 @@ export default function QuestionnairePage() {
                           className="space-y-6"
                         >
                           <CardHeader>
-                            <CardTitle className="font-display text-navy">School Days</CardTitle>
+                            <CardTitle className="font-display text-foreground">School Days</CardTitle>
                             <CardDescription>When and where you belonged.</CardDescription>
                           </CardHeader>
                           <div className="grid gap-6 sm:grid-cols-2">
@@ -295,7 +295,7 @@ export default function QuestionnairePage() {
                           className="space-y-6"
                         >
                           <CardHeader>
-                            <CardTitle className="font-display text-navy">Memories</CardTitle>
+                            <CardTitle className="font-display text-foreground">Memories</CardTitle>
                             <CardDescription>Share a moment that defines your Patch story.</CardDescription>
                           </CardHeader>
                           <FormField
@@ -349,7 +349,7 @@ export default function QuestionnairePage() {
                           className="space-y-6"
                         >
                           <CardHeader>
-                            <CardTitle className="font-display text-navy">Almost there</CardTitle>
+                            <CardTitle className="font-display text-foreground">Almost there</CardTitle>
                             <CardDescription>Confirm and submit your story.</CardDescription>
                           </CardHeader>
                           <FormField

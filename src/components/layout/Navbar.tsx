@@ -17,7 +17,7 @@ export function Navbar() {
   const location = useLocation();
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-navy/95 backdrop-blur-md border-b border-gold/20">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-primary/95 backdrop-blur-md border-b border-accent/20">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
@@ -28,10 +28,10 @@ export function Navbar() {
               className="h-12 w-12 object-contain impala-emblem transition-transform group-hover:scale-105"
             />
             <div className="hidden sm:block">
-              <h1 className="font-display text-lg font-bold text-cream leading-tight">
+              <h1 className="font-display text-lg font-bold text-primary-foreground leading-tight">
                 Nairobi School
               </h1>
-              <p className="text-xs text-gold font-medium tracking-wider">
+              <p className="text-xs text-accent font-medium tracking-wider">
                 ALUMNI ASSOCIATION
               </p>
             </div>
@@ -43,10 +43,10 @@ export function Navbar() {
               <Link
                 key={link.href}
                 to={link.href}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                   location.pathname === link.href
-                    ? "text-gold bg-gold/10"
-                    : "text-cream/80 hover:text-gold hover:bg-gold/5"
+                    ? "text-accent bg-accent/10"
+                    : "text-primary-foreground/80 hover:text-accent hover:bg-accent/5"
                 }`}
               >
                 {link.label}
@@ -62,7 +62,7 @@ export function Navbar() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-2 text-cream hover:text-gold transition-colors"
+            className="md:hidden p-2 text-primary-foreground hover:text-accent transition-colors rounded-lg"
           >
             {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
@@ -70,17 +70,17 @@ export function Navbar() {
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <div className="md:hidden py-4 border-t border-gold/20">
+          <div className="md:hidden py-4 border-t border-accent/20">
             <div className="flex flex-col gap-2">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   to={link.href}
                   onClick={() => setIsOpen(false)}
-                  className={`px-4 py-3 rounded-md text-sm font-medium transition-colors ${
+                  className={`px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
                     location.pathname === link.href
-                      ? "text-gold bg-gold/10"
-                      : "text-cream/80 hover:text-gold hover:bg-gold/5"
+                      ? "text-accent bg-accent/10"
+                      : "text-primary-foreground/80 hover:text-accent hover:bg-accent/5"
                   }`}
                 >
                   {link.label}

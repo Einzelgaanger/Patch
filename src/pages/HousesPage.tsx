@@ -83,11 +83,11 @@ export default function HousesPage() {
       {/* Hero */}
       <section className="py-20 section-navy">
         <div className="container mx-auto px-4 text-center">
-          <Building2 className="h-16 w-16 text-gold mx-auto mb-6" />
-          <h1 className="font-display text-5xl md:text-6xl font-bold text-cream mb-6">
+          <Building2 className="h-16 w-16 text-accent mx-auto mb-6" />
+          <h1 className="font-display text-5xl md:text-6xl font-bold text-primary-foreground mb-6">
             The Eight Houses
           </h1>
-          <p className="text-cream/70 max-w-2xl mx-auto text-lg">
+          <p className="text-primary-foreground/70 max-w-2xl mx-auto text-lg">
             Each house is more than just a dormitory — it's a family. The friendly 
             rivalries and deep bonds formed here last a lifetime.
           </p>
@@ -149,8 +149,8 @@ export default function HousesPage() {
       {/* House Rivalry */}
       <section className="py-20 section-cream">
         <div className="container mx-auto px-4 text-center">
-          <Users className="h-12 w-12 text-gold mx-auto mb-6" />
-          <h2 className="font-display text-3xl font-bold text-navy mb-6">
+          <Users className="h-12 w-12 text-accent mx-auto mb-6" />
+          <h2 className="font-display text-3xl font-bold text-foreground mb-6">
             The Spirit of Competition
           </h2>
           <p className="text-muted-foreground max-w-3xl mx-auto text-lg leading-relaxed">

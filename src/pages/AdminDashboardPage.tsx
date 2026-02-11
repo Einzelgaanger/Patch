@@ -62,7 +62,7 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="bg-navy text-cream p-4">
+      <header className="bg-primary text-primary-foreground p-4">
         <div className="container mx-auto flex justify-between items-center">
           <h1 className="font-display text-xl font-bold">Admin Dashboard</h1>
           <Button variant="heroOutline" size="sm" onClick={handleLogout}>
@@ -75,14 +75,14 @@ export default function AdminDashboardPage() {
         <div className="grid md:grid-cols-3 gap-6 mb-8">
           <Card className="border-0 card-elevated">
             <CardContent className="pt-6 text-center">
-              <Users className="h-8 w-8 text-gold mx-auto mb-2" />
+              <Users className="h-8 w-8 text-accent mx-auto mb-2" />
               <p className="font-display text-3xl font-bold">{responses.length}</p>
               <p className="text-muted-foreground text-sm">Total Responses</p>
             </CardContent>
           </Card>
           <Card className="border-0 card-elevated">
             <CardContent className="pt-6 text-center">
-              <p className="font-display text-3xl font-bold text-gold">
+              <p className="font-display text-3xl font-bold text-accent">
                 {responses.filter((r) => r.was_prefect).length}
               </p>
               <p className="text-muted-foreground text-sm">Were Prefects</p>
@@ -116,7 +116,7 @@ export default function AdminDashboardPage() {
           <CardContent>
             {loading ? (
               <div className="flex justify-center py-12">
-                <Loader2 className="h-8 w-8 animate-spin text-gold" />
+                <Loader2 className="h-8 w-8 animate-spin text-accent" />
               </div>
             ) : (
               <Table>

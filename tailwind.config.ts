@@ -61,19 +61,19 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
-        // Premium Nairobi School Colors
+        /* Theme aliases — driven by CSS vars for consistency */
         navy: {
-          DEFAULT: "#021431", // Deep Oxford Blue
-          light: "#172a46",
+          DEFAULT: "hsl(var(--navy))",
+          light: "hsl(var(--navy-light))",
         },
         gold: {
-          DEFAULT: "#C5A059", // Metallic Antique Gold
-          light: "#E5C585",
-          dark: "#997B3D",
+          DEFAULT: "hsl(var(--gold))",
+          light: "hsl(var(--gold-light))",
+          dark: "hsl(var(--gold-dark))",
         },
         cream: {
-          DEFAULT: "#F2F0E9", // Antique Paper
-          dark: "#E6E2D6",
+          DEFAULT: "hsl(var(--cream))",
+          dark: "hsl(var(--cream-dark))",
         },
       },
       borderRadius: {

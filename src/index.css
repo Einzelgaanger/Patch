@@ -11,53 +11,53 @@
 
 @layer base {
   :root {
-    /* Core (light mode) - warm, grounded */
-    --background: 40 30% 98%;
-    --foreground: 215 28% 17%;
+    /* Nairobi School — single consistent theme: Navy + Gold + Cream */
 
-    --card: 40 25% 99%;
-    --card-foreground: 215 28% 17%;
-
-    --popover: 40 25% 99%;
-    --popover-foreground: 215 28% 17%;
-
-    /* Primary (Oxford Navy) */
-    --primary: 217 92% 10%; /* #021431 */
+    /* Primary = Navy (brand, header, footer, primary actions) */
+    --primary: 217 92% 10%;
     --primary-foreground: 40 30% 98%;
 
-    /* Secondary (Antique Gold) */
-    --secondary: 42 45% 56%; /* #C5A059 */
-    --secondary-foreground: 217 92% 10%;
+    /* Secondary = Warm cream (alternate sections, cards) */
+    --background: 40 28% 97%;
+    --foreground: 217 92% 12%;
 
-    /* Accent (Rust/Brick) */
-    --accent: 16 75% 48%;
-    --accent-foreground: 40 30% 98%;
+    --card: 40 25% 99%;
+    --card-foreground: 217 92% 12%;
+
+    --popover: 40 25% 99%;
+    --popover-foreground: 217 92% 12%;
+
+    --secondary: 38 30% 94%;
+    --secondary-foreground: 217 92% 12%;
+
+    /* Accent = Gold (highlights, CTAs, links) */
+    --accent: 42 45% 56%;
+    --accent-foreground: 217 92% 10%;
 
     /* Muted */
-    --muted: 215 20% 95%;
-    --muted-foreground: 215 20% 45%;
+    --muted: 40 20% 93%;
+    --muted-foreground: 217 25% 45%;
 
-    /* Destructive */
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Borders & inputs */
-    --border: 215 20% 90%;
-    --input: 215 20% 90%;
+    --border: 40 18% 88%;
+    --input: 40 18% 88%;
     --ring: 217 92% 10%;
 
-    /* Special accents */
+    /* Brand aliases (use these or primary/accent) */
     --gold: 42 45% 56%;
-    --gold-light: 42 65% 71%; /* #E5C585 */
-    --gold-dark: 42 45% 42%;  /* #997B3D */
-    
+    --gold-light: 42 55% 68%;
+    --gold-dark: 42 40% 42%;
+    --gold-foreground: 217 92% 10%;
+
     --navy: 217 92% 10%;
     --navy-light: 216 50% 18%;
 
-    --cream: 40 30% 96%;
-    --cream-dark: 40 20% 87%;
+    --cream: 40 28% 96%;
+    --cream-dark: 40 22% 90%;
 
-    /* Sidebar */
+    /* Sidebar (admin) */
     --sidebar-background: 217 92% 10%;
     --sidebar-foreground: 40 30% 95%;
     --sidebar-primary: 42 45% 56%;
@@ -67,14 +67,11 @@
     --sidebar-border: 216 50% 18%;
     --sidebar-ring: 42 45% 56%;
 
-    /* Radii */
-    --radius: 0.5rem;
-
-    /* Shadows */
+    --radius: 0.75rem;
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.06);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.05);
-    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 10px 10px -5px rgb(0 0 0 / 0.04);
+    --shadow-md: 0 4px 12px -2px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.04);
+    --shadow-lg: 0 12px 24px -4px rgb(0 0 0 / 0.1), 0 4px 8px -4px rgb(0 0 0 / 0.04);
+    --shadow-xl: 0 20px 40px -8px rgb(0 0 0 / 0.12);
   }
 
   .dark {
@@ -120,7 +117,7 @@
   
   h1, h2, h3, h4, h5, h6 {
     font-family: "Playfair Display", serif;
-    @apply font-bold tracking-tight text-navy dark:text-cream;
+    @apply font-bold tracking-tight text-foreground;
   }
 }
 
@@ -135,29 +132,23 @@
   }
 
   /* Text gradients */
-  .text-gradient-gold {
-    background: linear-gradient(135deg, hsl(42 85% 55%), hsl(48 90% 65%), hsl(42 85% 55%));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
 
   .text-gradient-primary {
-    background: linear-gradient(135deg, hsl(158 55% 22%), hsl(165 50% 30%));
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--navy-light)));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
-  .text-gradient-clay {
-    background: linear-gradient(135deg, hsl(16 75% 48%), hsl(25 70% 55%));
+  .text-gradient-gold {
+    background: linear-gradient(135deg, hsl(var(--gold)), hsl(var(--gold-light)), hsl(var(--gold)));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
   .hero-text-gradient {
-    background: linear-gradient(135deg, hsl(42 85% 60%), hsl(38 80% 55%), hsl(42 90% 65%));
+    background: linear-gradient(135deg, hsl(var(--gold-light)), hsl(var(--gold)), hsl(var(--gold-light)));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -196,7 +187,7 @@
 
   /* Section styling helpers */
   .section-cream {
-    background-color: hsl(var(--secondary) / 0.4);
+    @apply bg-secondary;
   }
 
   .section-primary-soft {
@@ -221,7 +212,7 @@
     transform: translateX(-50%);
     width: 60px;
     height: 3px;
-    background: linear-gradient(135deg, hsl(42 85% 55%), hsl(48 90% 65%));
+    background: linear-gradient(135deg, hsl(var(--gold)), hsl(var(--gold-light)));
     border-radius: 9999px;
   }
 
@@ -295,7 +286,7 @@
     width: 0;
     height: 2px;
     border-radius: 9999px;
-    background: linear-gradient(90deg, hsl(var(--accent)), hsl(var(--gold)));
+    background: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--gold)));
     transition: width 0.4s ease;
   }
 
@@ -305,7 +296,7 @@
 
   /* Impala Logo Style */
   .impala-emblem {
-    filter: drop-shadow(0 2px 4px hsl(45 95% 50% / 0.3));
+    filter: drop-shadow(0 2px 4px hsl(var(--accent) / 0.3));
   }
 
   /* Image shine effect */
