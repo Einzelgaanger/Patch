@@ -71,6 +71,7 @@ export default function AdminDashboardPage() {
     try {
       const res = await supabase.functions.invoke("fetch-responses", {
         headers: { "x-admin-key": "NairobiSchool2026!" },
+        body: { adminKey: "NairobiSchool2026!" },
       });
       if (res.error) throw res.error;
       setResponses(res.data?.data || []);
@@ -123,7 +124,7 @@ export default function AdminDashboardPage() {
     try {
       const res = await supabase.functions.invoke("admin-ai-chat", {
         headers: { "x-admin-key": "NairobiSchool2026!" },
-        body: { question },
+        body: { question, adminKey: "NairobiSchool2026!" },
       });
       if (res.error) throw res.error;
       setChatMessages((prev) => [...prev, { role: "ai", text: res.data?.answer || "No response." }]);

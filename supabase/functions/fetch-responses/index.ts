@@ -6,6 +6,8 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-admin-key",
 };
 
+const ADMIN_KEY = "NairobiSchool2026!";
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
@@ -13,11 +15,10 @@ serve(async (req) => {
     const authHeader = req.headers.get("authorization");
     if (!authHeader) throw new Error("Missing auth header");
 
-    // Verify the admin password from a custom header
-    const adminKey = req.headers.get("x-admin-key");
-    if (adminKey !== "NairobiSchool2026!") {
-      throw new Error("Unauthorized");
-    }
+    const headerKey = req.headers.get("x-admin-key");
+    const body = req.method === "POST" ? await req.json().catch(() => ({})) : {};
+    const adminKey = headerKey ?? body.adminKey;
+    if (adminKey !== ADMIN_KEY) throw new Error("Unauthorized");
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,

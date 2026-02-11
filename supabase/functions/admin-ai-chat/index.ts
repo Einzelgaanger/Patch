@@ -6,14 +6,18 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-admin-key",
 };
 
+const ADMIN_KEY = "NairobiSchool2026!";
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const adminKey = req.headers.get("x-admin-key");
-    if (adminKey !== "NairobiSchool2026!") throw new Error("Unauthorized");
+    const headerKey = req.headers.get("x-admin-key");
+    const body = await req.json().catch(() => ({}));
+    const adminKey = headerKey ?? body.adminKey;
+    if (adminKey !== ADMIN_KEY) throw new Error("Unauthorized");
 
-    const { question } = await req.json();
+    const { question } = body;
     if (!question) throw new Error("No question provided");
 
     const supabase = createClient(
