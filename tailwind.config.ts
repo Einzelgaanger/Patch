@@ -15,7 +15,7 @@ export default {
     extend: {
       fontFamily: {
         display: ['"Playfair Display"', 'serif'],
-        sans: ['Inter', 'sans-serif'],
+        sans: ['"Space Grotesk"', 'system-ui', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -61,19 +61,19 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
-        // Nairobi School Custom Colors
+        // Premium Nairobi School Colors
         navy: {
-          DEFAULT: "hsl(var(--navy))",
-          light: "hsl(var(--navy-light))",
+          DEFAULT: "#021431", // Deep Oxford Blue
+          light: "#172a46",
         },
         gold: {
-          DEFAULT: "hsl(var(--gold))",
-          light: "hsl(var(--gold-light))",
-          dark: "hsl(var(--gold-dark))",
+          DEFAULT: "#C5A059", // Metallic Antique Gold
+          light: "#E5C585",
+          dark: "#997B3D",
         },
         cream: {
-          DEFAULT: "hsl(var(--cream))",
-          dark: "hsl(var(--cream-dark))",
+          DEFAULT: "#F2F0E9", // Antique Paper
+          dark: "#E6E2D6",
         },
       },
       borderRadius: {
@@ -94,22 +94,38 @@ export default {
           "0%": { opacity: "0", transform: "translateY(20px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
+        "fade-in-left": {
+          "0%": { opacity: "0", transform: "translateX(-20px)" },
+          "100%": { opacity: "1", transform: "translateX(0)" },
+        },
+        "fade-in-right": {
+          "0%": { opacity: "0", transform: "translateX(20px)" },
+          "100%": { opacity: "1", transform: "translateX(0)" },
+        },
         "scale-in": {
           "0%": { opacity: "0", transform: "scale(0.95)" },
           "100%": { opacity: "1", transform: "scale(1)" },
         },
+        "ken-burns": {
+          "0%": { transform: "scale(1) translate(0, 0)" },
+          "100%": { transform: "scale(1.1) translate(-2%, -2%)" },
+        }
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "fade-in-up": "fade-in-up 0.6s ease-out",
-        "scale-in": "scale-in 0.4s ease-out",
+        "fade-in-up": "fade-in-up 0.8s ease-out forwards",
+        "fade-in-left": "fade-in-left 0.8s ease-out forwards",
+        "fade-in-right": "fade-in-right 0.8s ease-out forwards",
+        "scale-in": "scale-in 0.6s ease-out forwards",
+        "ken-burns": "ken-burns 20s ease-out infinite alternate",
       },
       boxShadow: {
-        'soft': '0 4px 20px -4px hsl(213 80% 25% / 0.12)',
-        'card': '0 8px 30px -8px hsl(213 80% 25% / 0.15)',
-        'gold': '0 4px 20px -4px hsl(45 95% 50% / 0.35)',
-        'gold-lg': '0 6px 30px -4px hsl(45 95% 50% / 0.5)',
+        soft: "0 2px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.05)",
+        elegant: "0 10px 40px -10px rgb(0 0 0 / 0.2)",
+        glow: "0 0 40px -8px rgba(197, 160, 89, 0.3)",
+        "hard-shadow": "4px 4px 0px 0px rgba(0,0,0,1)",
+        card: "0 12px 24px -4px rgb(0 0 0 / 0.08), 0 4px 8px -4px rgb(0 0 0 / 0.03)",
       },
     },
   },

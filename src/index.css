@@ -1,117 +1,110 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Nairobi School Alumni - Design System
-   Inspired by the school's royal heritage and the Impala emblem
-   Colors: Royal Blue, Gold, and classic academic tones
+/* Premium Nairobi School Chronicles Design System
+   Based on a luxury sports aesthetic with warm, grounded tones
+   Fonts: Playfair Display (display), Space Grotesk (body)
 */
-
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
 @layer base {
   :root {
-    /* Core Brand Colors - Royal Blue & Gold */
-    --background: 210 20% 98%;
-    --foreground: 215 25% 15%;
+    /* Core (light mode) - warm, grounded */
+    --background: 40 30% 98%;
+    --foreground: 215 28% 17%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 215 25% 15%;
+    --card: 40 25% 99%;
+    --card-foreground: 215 28% 17%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 15%;
+    --popover: 40 25% 99%;
+    --popover-foreground: 215 28% 17%;
 
-    /* Royal Blue - Primary */
-    --primary: 213 80% 35%;
-    --primary-foreground: 45 100% 95%;
+    /* Primary (Oxford Navy) */
+    --primary: 217 92% 10%; /* #021431 */
+    --primary-foreground: 40 30% 98%;
 
-    /* Gold - Secondary */
-    --secondary: 45 95% 50%;
-    --secondary-foreground: 215 25% 15%;
+    /* Secondary (Antique Gold) */
+    --secondary: 42 45% 56%; /* #C5A059 */
+    --secondary-foreground: 217 92% 10%;
 
-    --muted: 210 15% 93%;
-    --muted-foreground: 215 15% 45%;
+    /* Accent (Rust/Brick) */
+    --accent: 16 75% 48%;
+    --accent-foreground: 40 30% 98%;
 
-    /* Gold Accent */
-    --accent: 45 95% 50%;
-    --accent-foreground: 215 25% 15%;
+    /* Muted */
+    --muted: 215 20% 95%;
+    --muted-foreground: 215 20% 45%;
 
-    --destructive: 0 84% 60%;
+    /* Destructive */
+    --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 214 25% 88%;
-    --input: 214 25% 88%;
-    --ring: 213 80% 35%;
+    /* Borders & inputs */
+    --border: 215 20% 90%;
+    --input: 215 20% 90%;
+    --ring: 217 92% 10%;
 
-    --radius: 0.625rem;
+    /* Special accents */
+    --gold: 42 45% 56%;
+    --gold-light: 42 65% 71%; /* #E5C585 */
+    --gold-dark: 42 45% 42%;  /* #997B3D */
+    
+    --navy: 217 92% 10%;
+    --navy-light: 216 50% 18%;
 
-    /* Custom Colors for School Theme */
-    --navy: 213 80% 25%;
-    --navy-light: 213 60% 35%;
-    --gold: 45 95% 50%;
-    --gold-light: 45 90% 65%;
-    --gold-dark: 42 85% 40%;
-    --cream: 45 40% 96%;
-    --cream-dark: 40 20% 90%;
-    
-    /* Gradients */
-    --gradient-royal: linear-gradient(135deg, hsl(213 80% 25%) 0%, hsl(213 80% 40%) 100%);
-    --gradient-gold: linear-gradient(135deg, hsl(45 95% 50%) 0%, hsl(42 85% 40%) 100%);
-    --gradient-hero: linear-gradient(180deg, hsl(213 80% 20% / 0.95) 0%, hsl(213 80% 30% / 0.85) 100%);
-    
-    /* Shadows */
-    --shadow-soft: 0 4px 20px -4px hsl(213 80% 25% / 0.12);
-    --shadow-card: 0 8px 30px -8px hsl(213 80% 25% / 0.15);
-    --shadow-gold: 0 4px 20px -4px hsl(45 95% 50% / 0.35);
-    
+    --cream: 40 30% 96%;
+    --cream-dark: 40 20% 87%;
+
     /* Sidebar */
-    --sidebar-background: 213 80% 20%;
-    --sidebar-foreground: 45 40% 96%;
-    --sidebar-primary: 45 95% 50%;
-    --sidebar-primary-foreground: 215 25% 15%;
-    --sidebar-accent: 213 60% 30%;
-    --sidebar-accent-foreground: 45 40% 96%;
-    --sidebar-border: 213 60% 35%;
-    --sidebar-ring: 45 95% 50%;
+    --sidebar-background: 217 92% 10%;
+    --sidebar-foreground: 40 30% 95%;
+    --sidebar-primary: 42 45% 56%;
+    --sidebar-primary-foreground: 217 92% 10%;
+    --sidebar-accent: 216 50% 18%;
+    --sidebar-accent-foreground: 40 30% 95%;
+    --sidebar-border: 216 50% 18%;
+    --sidebar-ring: 42 45% 56%;
+
+    /* Radii */
+    --radius: 0.5rem;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.06);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.05);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 10px 10px -5px rgb(0 0 0 / 0.04);
   }
 
   .dark {
-    --background: 215 25% 10%;
-    --foreground: 45 40% 96%;
+    --background: 217 92% 6%;
+    --foreground: 40 30% 95%;
 
-    --card: 215 25% 13%;
-    --card-foreground: 45 40% 96%;
+    --card: 217 92% 8%;
+    --card-foreground: 40 30% 95%;
 
-    --popover: 215 25% 13%;
-    --popover-foreground: 45 40% 96%;
+    --popover: 217 92% 8%;
+    --popover-foreground: 40 30% 95%;
 
-    --primary: 45 95% 55%;
-    --primary-foreground: 215 25% 10%;
+    --primary: 42 45% 56%;
+    --primary-foreground: 217 92% 10%;
 
-    --secondary: 213 60% 30%;
-    --secondary-foreground: 45 40% 96%;
+    --secondary: 216 50% 18%;
+    --secondary-foreground: 40 30% 95%;
 
-    --muted: 215 20% 20%;
-    --muted-foreground: 210 15% 60%;
+    --accent: 16 75% 55%;
+    --accent-foreground: 40 30% 98%;
 
-    --accent: 45 95% 55%;
-    --accent-foreground: 215 25% 10%;
+    --muted: 217 50% 15%;
+    --muted-foreground: 215 20% 70%;
 
     --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 215 20% 25%;
-    --input: 215 20% 25%;
-    --ring: 45 95% 55%;
-    
-    --sidebar-background: 215 25% 8%;
-    --sidebar-foreground: 45 40% 96%;
-    --sidebar-primary: 45 95% 55%;
-    --sidebar-primary-foreground: 215 25% 10%;
-    --sidebar-accent: 215 20% 18%;
-    --sidebar-accent-foreground: 45 40% 96%;
-    --sidebar-border: 215 20% 20%;
-    --sidebar-ring: 45 95% 55%;
+    --border: 217 50% 20%;
+    --input: 217 50% 20%;
+    --ring: 42 45% 56%;
   }
 }
 
@@ -122,78 +115,137 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: 'Inter', sans-serif;
+    font-family: "Space Grotesk", system-ui, sans-serif;
   }
   
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Playfair Display', serif;
-    @apply font-semibold tracking-tight;
+    font-family: "Playfair Display", serif;
+    @apply font-bold tracking-tight text-navy dark:text-cream;
   }
 }
 
 @layer components {
-  /* Hero Section Styles */
-  .hero-gradient {
-    background: var(--gradient-hero);
+  /* Hero gradients & overlays */
+  .hero-gradient-overlay-x {
+    background-image: linear-gradient(to right, rgb(0 0 0 / 0.7), rgb(0 0 0 / 0.5), rgb(0 0 0 / 0.3));
   }
-  
+
+  .hero-gradient-overlay-y {
+    background-image: linear-gradient(to top, rgb(0 0 0 / 0.5), transparent, rgb(0 0 0 / 0.2));
+  }
+
+  /* Text gradients */
   .text-gradient-gold {
-    background: var(--gradient-gold);
+    background: linear-gradient(135deg, hsl(42 85% 55%), hsl(48 90% 65%), hsl(42 85% 55%));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
-  
-  /* Card Variants */
-  .card-elevated {
-    @apply bg-card rounded-xl;
-    box-shadow: var(--shadow-card);
+
+  .text-gradient-primary {
+    background: linear-gradient(135deg, hsl(158 55% 22%), hsl(165 50% 30%));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
-  
+
+  .text-gradient-clay {
+    background: linear-gradient(135deg, hsl(16 75% 48%), hsl(25 70% 55%));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-text-gradient {
+    background: linear-gradient(135deg, hsl(42 85% 60%), hsl(38 80% 55%), hsl(42 90% 65%));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Card variants */
+  .card-elevated {
+    @apply bg-card rounded-2xl;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .card-soft {
+    @apply bg-card rounded-xl;
+    box-shadow: var(--shadow-md);
+  }
+
   .card-gold-border {
-    @apply border-2 rounded-xl;
+    @apply border-2 rounded-2xl;
     border-color: hsl(var(--gold));
   }
-  
-  /* Button Glow Effect */
-  .btn-glow {
-    box-shadow: var(--shadow-gold);
-    transition: all 0.3s ease;
+
+  /* Glass morphism */
+  .glass-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.05));
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 1rem;
   }
-  
-  .btn-glow:hover {
-    box-shadow: 0 6px 30px -4px hsl(45 95% 50% / 0.5);
-    transform: translateY(-2px);
+
+  .glass-dark {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.2));
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
   }
-  
-  /* Section Styling */
-  .section-navy {
-    background: var(--gradient-royal);
-    @apply text-white;
-  }
-  
+
+  /* Section styling helpers */
   .section-cream {
-    background-color: hsl(var(--cream));
+    background-color: hsl(var(--secondary) / 0.4);
   }
-  
-  /* Decorative Elements */
+
+  .section-primary-soft {
+    background-image: linear-gradient(to bottom right, hsl(var(--secondary)), hsl(var(--background)), hsl(var(--secondary)));
+  }
+
+  .section-navy {
+    background-color: hsl(var(--primary));
+    @apply text-primary-foreground;
+  }
+
+  /* Decorative underline */
   .gold-underline {
     position: relative;
   }
-  
+
   .gold-underline::after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: -8px;
     left: 50%;
     transform: translateX(-50%);
     width: 60px;
     height: 3px;
-    background: var(--gradient-gold);
-    border-radius: 2px;
+    background: linear-gradient(135deg, hsl(42 85% 55%), hsl(48 90% 65%));
+    border-radius: 9999px;
   }
-  
-  /* House Colors */
+
+  /* Background patterns */
+  .bg-dots {
+    background-image: radial-gradient(circle, hsl(var(--primary) / 0.08) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, hsl(var(--border) / 0.5) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--border) / 0.5) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+
+  .court-pattern {
+    background-image:
+      linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  /* House Colors (kept for existing pages) */
   .house-elgon { --house-color: 213 80% 35%; }
   .house-athi { --house-color: 142 70% 35%; }
   .house-serengeti { --house-color: 25 90% 50%; }
@@ -229,32 +281,68 @@
     background-size: 200% 100%;
     animation: shimmer 2s infinite;
   }
-  
+
+  /* Link underline hover */
+  .link-underline {
+    position: relative;
+  }
+
+  .link-underline::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    border-radius: 9999px;
+    background: linear-gradient(90deg, hsl(var(--accent)), hsl(var(--gold)));
+    transition: width 0.4s ease;
+  }
+
+  .link-underline:hover::after {
+    width: 100%;
+  }
+
   /* Impala Logo Style */
   .impala-emblem {
     filter: drop-shadow(0 2px 4px hsl(45 95% 50% / 0.3));
   }
+
+  /* Image shine effect */
+  .image-shine {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .image-shine::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.6s ease;
+  }
+
+  .image-shine:hover::after {
+    left: 100%;
+  }
 }
 
-/* Smooth scrolling */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Custom scrollbar */
+/* Hidden/soft scrollbars & touch optimizations */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 0;
+  height: 0;
+  background: transparent;
 }
 
-::-webkit-scrollbar-track {
-  background: hsl(var(--muted));
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
-::-webkit-scrollbar-thumb {
-  background: hsl(var(--navy));
-  border-radius: 5px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--navy-light));
+body {
+  -webkit-overflow-scrolling: touch;
 }
