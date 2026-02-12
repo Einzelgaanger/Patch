@@ -150,10 +150,10 @@ export default function AdminDashboardPage() {
         <div className="container mx-auto flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3">
           <h1 className="font-display text-lg sm:text-xl font-bold">Admin Dashboard</h1>
           <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
-            <Button variant="outline" size="sm" onClick={() => setChatOpen(!chatOpen)} className="gap-1 border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10">
+            <Button variant="outline" size="sm" onClick={() => setChatOpen(!chatOpen)} className="gap-1 border-2 border-white text-white bg-white/10 hover:bg-white/20 shadow-sm">
               <MessageCircle className="h-4 w-4" /> AI Assistant
             </Button>
-            <Button variant="outline" size="sm" onClick={handleLogout} className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10">
+            <Button variant="outline" size="sm" onClick={handleLogout} className="border-2 border-white text-white bg-white/10 hover:bg-white/20 shadow-sm">
               <LogOut className="h-4 w-4" /> Logout
             </Button>
           </div>

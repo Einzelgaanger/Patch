@@ -39,24 +39,27 @@ export function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-1">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                to={link.href}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  location.pathname === link.href
-                    ? "text-accent bg-accent/10"
-                    : "text-primary-foreground/80 hover:text-accent hover:bg-accent/5"
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
-            <Link to="/admin" className="ml-4">
-              <Button variant="heroOutline" size="sm">
-                Admin
-              </Button>
-            </Link>
+            {navLinks.map((link) =>
+              link.href === "/book" ? (
+                <Link key={link.href} to={link.href} className="ml-2">
+                  <Button variant="heroOutline" size="sm">
+                    {link.label}
+                  </Button>
+                </Link>
+              ) : (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    location.pathname === link.href
+                      ? "text-accent bg-accent/10"
+                      : "text-primary-foreground/80 hover:text-accent hover:bg-accent/5"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              )
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -72,29 +75,33 @@ export function Navbar() {
         {isOpen && (
           <div className="md:hidden py-4 border-t border-accent/20">
             <div className="flex flex-col gap-2">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  to={link.href}
-                  onClick={() => setIsOpen(false)}
-                  className={`px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
-                    location.pathname === link.href
-                      ? "text-accent bg-accent/10"
-                      : "text-primary-foreground/80 hover:text-accent hover:bg-accent/5"
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              ))}
-              <Link
-                to="/admin"
-                onClick={() => setIsOpen(false)}
-                className="mt-2"
-              >
-                <Button variant="heroOutline" size="sm" className="w-full">
-                  Admin
-                </Button>
-              </Link>
+              {navLinks.map((link) =>
+                link.href === "/book" ? (
+                  <Link
+                    key={link.href}
+                    to={link.href}
+                    onClick={() => setIsOpen(false)}
+                    className="mt-2"
+                  >
+                    <Button variant="heroOutline" size="sm" className="w-full">
+                      {link.label}
+                    </Button>
+                  </Link>
+                ) : (
+                  <Link
+                    key={link.href}
+                    to={link.href}
+                    onClick={() => setIsOpen(false)}
+                    className={`px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
+                      location.pathname === link.href
+                        ? "text-accent bg-accent/10"
+                        : "text-primary-foreground/80 hover:text-accent hover:bg-accent/5"
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                )
+              )}
             </div>
           </div>
         )}

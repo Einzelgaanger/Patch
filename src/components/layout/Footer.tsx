@@ -16,7 +16,7 @@ export function Footer() {
                 className="h-14 w-14 object-contain"
               />
               <div>
-                <h3 className="font-display text-xl font-bold">Nairobi School</h3>
+                <h3 className="font-display text-xl font-bold text-white">Nairobi School</h3>
                 <p className="text-accent text-sm font-medium">To The Uttermost</p>
               </div>
             </div>

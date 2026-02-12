@@ -79,8 +79,8 @@ export default function HistoryPage() {
       {/* Hero */}
       <section className="relative py-16 sm:py-20 section-navy overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <img src="/quadimage.webp" alt="" className="w-full h-full object-cover opacity-20" />
-          <div className="absolute inset-0 bg-primary/90" />
+          <img src="/quadimage.webp" alt="" className="w-full h-full object-cover object-center opacity-80" />
+          <div className="absolute inset-0 bg-primary/50" />
         </div>
         <div className="container mx-auto px-4 sm:px-6 text-center relative z-10">
           <p className="text-accent font-medium tracking-widest uppercase mb-3 sm:mb-4 text-sm sm:text-base">

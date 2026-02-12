@@ -51,12 +51,12 @@ export default function Index() {
             className="absolute inset-0 z-0"
             style={{ y: heroY, opacity: heroOpacity }}
           >
-            <div className="absolute inset-0 bg-primary/40 mix-blend-multiply z-10" />
-            <div className="absolute inset-0 bg-gradient-to-t from-primary via-transparent to-transparent z-20" />
+            <div className="absolute inset-0 bg-primary/50 z-10" />
+            <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-transparent to-transparent z-20" />
             <img
               src={SCHOOL_IMAGES.hero}
               alt="Nairobi School — Campus"
-              className="w-full h-full object-cover object-center scale-105"
+              className="w-full h-full object-cover object-center scale-105 opacity-80"
               onError={(e) => { (e.target as HTMLImageElement).src = SCHOOL_IMAGES.administration; }}
             />
           </motion.div>
@@ -104,23 +104,13 @@ export default function Index() {
                   </Button>
                 </Link>
                 <Link to="/history" className="w-full sm:w-auto">
-                  <Button variant="outline" className="h-12 sm:h-16 px-6 sm:px-10 rounded-full border-white/30 text-white hover:bg-white/10 font-medium text-base sm:text-lg backdrop-blur-sm w-full sm:w-auto">
+                  <Button variant="glass" className="h-12 sm:h-16 px-6 sm:px-10 rounded-full font-medium text-base sm:text-lg w-full sm:w-auto border-2 border-white text-white bg-white/15 hover:bg-white/25">
                     Explore History
                   </Button>
                 </Link>
               </motion.div>
             </motion.div>
           </div>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 2, duration: 1 }}
-            className="absolute bottom-6 sm:bottom-12 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-2 sm:gap-4"
-          >
-            <span className="text-white/50 text-[10px] sm:text-xs tracking-widest uppercase">Scroll to Discover</span>
-            <div className="w-[1px] h-10 sm:h-16 bg-gradient-to-b from-accent to-transparent" />
-          </motion.div>
         </section>
 
         {/* --- BENTO GRID FEATURES --- */}
