@@ -1,15 +1,13 @@
 /**
- * Admin Dashboard — loads questionnaire responses via direct Supabase table read (RLS).
- * DO NOT call supabase.functions.invoke("fetch-responses") or send "x-admin-key" header;
- * that causes CORS errors on Lovable preview. Use only supabase.from("questionnaire_responses").select().
+ * Admin Dashboard — uses hardcoded auth (localStorage) and edge functions
+ * to bypass RLS (since we're not using Supabase auth for admin).
  */
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
@@ -63,31 +61,24 @@ export default function AdminDashboardPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    let cancelled = false;
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (cancelled) return;
-      if (!session) {
-        navigate("/admin");
-        return;
-      }
-      fetchResponses();
-    });
-    return () => { cancelled = true; };
+    if (localStorage.getItem("admin_authenticated") !== "true") {
+      navigate("/admin");
+      return;
+    }
+    fetchResponses();
   }, [navigate]);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chatMessages]);
 
-  // Uses direct table read + RLS (no Edge Function) so CORS is not an issue on Lovable.
   const fetchResponses = async () => {
     try {
-      const { data, error } = await supabase
-        .from("questionnaire_responses")
-        .select("*")
-        .order("created_at", { ascending: false });
-      if (error) throw error;
-      setResponses(data ?? []);
+      const res = await supabase.functions.invoke("fetch-responses", {
+        body: { adminKey: "NairobiSchool2026!" },
+      });
+      if (res.error) throw res.error;
+      setResponses(res.data?.data ?? []);
     } catch (error: unknown) {
       toast.error("Failed to load responses: " + (error instanceof Error ? error.message : "Unknown error"));
     } finally {
@@ -95,8 +86,8 @@ export default function AdminDashboardPage() {
     }
   };
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
+  const handleLogout = () => {
+    localStorage.removeItem("admin_authenticated");
     navigate("/admin");
   };
 
@@ -158,10 +149,10 @@ export default function AdminDashboardPage() {
         <div className="container mx-auto flex justify-between items-center">
           <h1 className="font-display text-xl font-bold">Admin Dashboard</h1>
           <div className="flex items-center gap-3">
-            <Button variant="heroOutline" size="sm" onClick={() => setChatOpen(!chatOpen)} className="gap-1">
+            <Button variant="outline" size="sm" onClick={() => setChatOpen(!chatOpen)} className="gap-1 border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10">
               <MessageCircle className="h-4 w-4" /> AI Assistant
             </Button>
-            <Button variant="heroOutline" size="sm" onClick={handleLogout}>
+            <Button variant="outline" size="sm" onClick={handleLogout} className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10">
               <LogOut className="h-4 w-4" /> Logout
             </Button>
           </div>
@@ -229,8 +220,8 @@ export default function AdminDashboardPage() {
                   </TableHeader>
                   <TableBody>
                     {filteredResponses.map((r) => (
-                      <>
-                        <TableRow key={r.id} className="cursor-pointer hover:bg-secondary/50" onClick={() => setExpandedId(expandedId === r.id ? null : r.id)}>
+                      <React.Fragment key={r.id}>
+                        <TableRow className="cursor-pointer hover:bg-secondary/50" onClick={() => setExpandedId(expandedId === r.id ? null : r.id)}>
                           <TableCell>{expandedId === r.id ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}</TableCell>
                           <TableCell className="font-medium">{r.full_name}</TableCell>
                           <TableCell>{r.house}</TableCell>
@@ -240,7 +231,7 @@ export default function AdminDashboardPage() {
                           <TableCell>{new Date(r.created_at).toLocaleDateString()}</TableCell>
                         </TableRow>
                         {expandedId === r.id && (
-                          <TableRow key={r.id + "-detail"}>
+                          <TableRow>
                             <TableCell colSpan={7} className="bg-secondary/30 p-6">
                               <div className="grid md:grid-cols-2 gap-x-8 gap-y-1">
                                 {renderDetail("Email", r.email)}
@@ -265,7 +256,7 @@ export default function AdminDashboardPage() {
                             </TableCell>
                           </TableRow>
                         )}
-                      </>
+                      </React.Fragment>
                     ))}
                   </TableBody>
                 </Table>
@@ -306,7 +297,7 @@ export default function AdminDashboardPage() {
               onKeyDown={(e) => e.key === "Enter" && sendChat()}
               className="rounded-xl"
             />
-            <Button variant="hero" size="icon" onClick={sendChat} disabled={chatLoading}>
+            <Button size="icon" onClick={sendChat} disabled={chatLoading}>
               <Send className="h-4 w-4" />
             </Button>
           </div>
@@ -315,3 +306,5 @@ export default function AdminDashboardPage() {
     </div>
   );
 }
+
+

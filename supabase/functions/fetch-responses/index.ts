@@ -3,21 +3,17 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-admin-key",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
 const ADMIN_KEY = "NairobiSchool2026!";
 
 serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+  if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   try {
-    const authHeader = req.headers.get("authorization");
-    if (!authHeader) throw new Error("Missing auth header");
-
-    const headerKey = req.headers.get("x-admin-key");
-    const body = req.method === "POST" ? await req.json().catch(() => ({})) : {};
-    const adminKey = headerKey ?? body.adminKey;
+    const body = await req.json().catch(() => ({}));
+    const adminKey = body.adminKey;
     if (adminKey !== ADMIN_KEY) throw new Error("Unauthorized");
 
     const supabase = createClient(

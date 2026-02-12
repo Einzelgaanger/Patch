@@ -4,9 +4,11 @@ import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Lock, Loader2 } from "lucide-react";
+
+const ADMIN_EMAIL = "admin@nairobischool.com";
+const ADMIN_PASSWORD = "NairobiSchool2026!";
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState("");
@@ -18,10 +20,13 @@ export default function AdminLoginPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) throw error;
-      toast.success("Welcome, Admin!");
-      navigate("/admin/dashboard");
+      if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+        localStorage.setItem("admin_authenticated", "true");
+        toast.success("Welcome, Admin!");
+        navigate("/admin/dashboard");
+      } else {
+        throw new Error("Invalid email or password");
+      }
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : "Invalid credentials");
     } finally {
@@ -62,9 +67,6 @@ export default function AdminLoginPage() {
                 Sign In
               </Button>
             </form>
-            <p className="text-xs text-muted-foreground text-center mt-4">
-              Sign in with your Supabase admin account (must have admin role in user_roles).
-            </p>
           </CardContent>
         </Card>
       </section>
