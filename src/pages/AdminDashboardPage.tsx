@@ -145,22 +145,24 @@ export default function AdminDashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="bg-primary text-primary-foreground p-3 sm:p-4 sticky top-0 z-50">
-        <div className="container mx-auto flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3">
-          <h1 className="font-display text-lg sm:text-xl font-bold">Admin Dashboard</h1>
-          <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
-            <Button variant="outline" size="sm" onClick={() => setChatOpen(!chatOpen)} className="gap-1 border-2 border-white text-white bg-white/10 hover:bg-white/20 shadow-sm">
+    <div className="flex h-screen flex-col overflow-hidden bg-background">
+      <header className="z-50 shrink-0 bg-primary p-3 text-primary-foreground sm:p-4">
+        <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
+          <h1 className="font-display text-lg font-bold text-white sm:text-xl">Admin Dashboard</h1>
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+            <Button variant="outline" size="sm" onClick={() => setChatOpen(!chatOpen)} className="border-2 border-white bg-white/10 text-white shadow-sm hover:bg-white/20">
               <MessageCircle className="h-4 w-4" /> AI Assistant
             </Button>
-            <Button variant="outline" size="sm" onClick={handleLogout} className="border-2 border-white text-white bg-white/10 hover:bg-white/20 shadow-sm">
+            <Button variant="outline" size="sm" onClick={handleLogout} className="border-2 border-white bg-white/10 text-white shadow-sm hover:bg-white/20">
               <LogOut className="h-4 w-4" /> Logout
             </Button>
           </div>
         </div>
       </header>
 
-      <main className="container mx-auto px-3 sm:px-4 py-6 sm:py-8">
+      <div className="flex min-h-0 flex-1 overflow-hidden">
+        <main className="min-h-0 min-w-0 flex-1 overflow-y-auto overflow-x-hidden">
+          <div className="container mx-auto px-3 py-6 sm:px-4 sm:py-8">
         {/* Stats Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
           <Card className="border-0 card-elevated"><CardContent className="pt-4 sm:pt-6 text-center px-3 sm:px-6">
@@ -277,45 +279,106 @@ export default function AdminDashboardPage() {
             )}
           </CardContent>
         </Card>
-      </main>
+          </div>
+        </main>
 
-      {/* AI Chat Panel */}
-      {chatOpen && (
-        <div className="fixed inset-4 sm:inset-auto sm:bottom-6 sm:right-6 sm:w-96 w-[calc(100vw-2rem)] max-h-[85vh] sm:max-h-[600px] bg-card rounded-2xl shadow-2xl border border-border flex flex-col z-50 overflow-hidden">
-          <div className="bg-primary text-primary-foreground p-4 flex justify-between items-center">
-            <h3 className="font-display font-bold">AI Assistant</h3>
-            <button onClick={() => setChatOpen(false)}><X className="h-5 w-5" /></button>
-          </div>
-          <div className="flex-1 overflow-y-auto p-4 space-y-3 max-h-[400px]">
-            {chatMessages.length === 0 && (
-              <div className="text-muted-foreground text-sm text-center py-8">
-                Ask me anything about the responses.<br />
-                e.g. "Who were prefects from Elgon?"<br />
-                "Summarize the funniest stories"
+        {/* AI Chat — plain flex: header | scrollable messages | input */}
+        {chatOpen && (
+          <aside className="fixed inset-y-0 right-0 z-40 flex h-full min-h-0 w-full flex-col overflow-hidden border-l border-border bg-card md:relative md:inset-auto md:z-auto md:h-full md:min-h-0 md:w-[380px] lg:w-[420px]">
+            {/* Header — fixed height */}
+            <div className="flex shrink-0 items-center justify-between border-b border-border bg-primary px-4 py-3">
+              <div>
+                <h3 className="font-display text-base font-bold text-white sm:text-lg">AI Assistant</h3>
+                <p className="mt-0.5 text-xs text-white/70">Ask about questionnaire responses</p>
               </div>
-            )}
-            {chatMessages.map((msg, i) => (
-              <div key={i} className={`text-sm p-3 rounded-xl max-w-[90%] ${msg.role === "user" ? "bg-primary text-primary-foreground ml-auto" : "bg-secondary text-foreground"}`}>
-                {msg.text}
+              <button
+                onClick={() => setChatOpen(false)}
+                className="rounded-lg p-2 text-white/80 transition-colors hover:bg-white/10 hover:text-white"
+                aria-label="Close chat"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            {/* Messages — this is the only thing that scrolls */}
+            <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden p-4">
+              {chatMessages.length === 0 && (
+                <div className="flex flex-col items-center justify-center py-8 text-center">
+                  <p className="mb-4 text-sm text-muted-foreground">Ask me anything about the responses.</p>
+                  <div className="flex flex-wrap justify-center gap-2">
+                    {[
+                      "Who were prefects from Elgon?",
+                      "Summarize the funniest stories",
+                      "Which houses had sports captains?",
+                    ].map((example) => (
+                      <button
+                        key={example}
+                        type="button"
+                        onClick={() => setChatInput(example)}
+                        className="rounded-full border border-border bg-secondary px-3 py-1.5 text-xs text-foreground transition-colors hover:border-accent/30 hover:bg-accent/10"
+                      >
+                        {example}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+              <div className="space-y-3">
+                {chatMessages.map((msg, i) => (
+                  <div
+                    key={i}
+                    className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+                  >
+                    <div
+                      className={`max-w-[90%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
+                        msg.role === "user"
+                          ? "rounded-br-md bg-primary text-white"
+                          : "rounded-bl-md border border-border bg-secondary text-foreground"
+                      }`}
+                    >
+                      {msg.text}
+                    </div>
+                  </div>
+                ))}
+                {chatLoading && (
+                  <div className="flex justify-start">
+                    <div className="flex items-center gap-2 rounded-2xl rounded-bl-md border border-border bg-secondary px-4 py-2.5 text-sm text-muted-foreground">
+                      <Loader2 className="h-4 w-4 shrink-0 animate-spin" />
+                      <span>Thinking...</span>
+                    </div>
+                  </div>
+                )}
               </div>
-            ))}
-            {chatLoading && <div className="text-sm text-muted-foreground flex items-center gap-2"><Loader2 className="h-4 w-4 animate-spin" /> Thinking...</div>}
-            <div ref={chatEndRef} />
-          </div>
-          <div className="p-3 border-t border-border flex gap-2">
-            <Input
-              placeholder="Ask about the data..."
-              value={chatInput}
-              onChange={(e) => setChatInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && sendChat()}
-              className="rounded-xl"
-            />
-            <Button size="icon" onClick={sendChat} disabled={chatLoading}>
-              <Send className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-      )}
+              <div ref={chatEndRef} />
+            </div>
+
+            {/* Input — fixed height at bottom */}
+            <div
+              className="shrink-0 border-t border-border bg-card p-3"
+              style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom, 0px))" }}
+            >
+              <div className="flex gap-2">
+                <Input
+                  placeholder="Ask about the data..."
+                  value={chatInput}
+                  onChange={(e) => setChatInput(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && sendChat()}
+                  className="min-h-[44px] flex-1 rounded-xl border-border bg-background px-4 text-sm sm:min-h-[40px]"
+                />
+                <Button
+                  size="icon"
+                  onClick={sendChat}
+                  disabled={chatLoading || !chatInput.trim()}
+                  className="h-[44px] w-[44px] shrink-0 rounded-xl sm:h-10 sm:w-10"
+                  aria-label="Send message"
+                >
+                  <Send className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          </aside>
+        )}
+      </div>
     </div>
   );
 }
