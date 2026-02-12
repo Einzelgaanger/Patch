@@ -4,11 +4,9 @@ import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Lock, Loader2 } from "lucide-react";
-
-const ADMIN_EMAIL = "admin@nairobischool.com";
-const ADMIN_PASSWORD = "NairobiSchool2026!";
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState("");
@@ -19,17 +17,16 @@ export default function AdminLoginPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
-    // Hardcoded admin credentials check
-    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-      localStorage.setItem("admin_authenticated", "true");
+    try {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) throw error;
       toast.success("Welcome, Admin!");
       navigate("/admin/dashboard");
-    } else {
-      toast.error("Invalid credentials");
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Invalid credentials");
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
@@ -37,7 +34,7 @@ export default function AdminLoginPage() {
       <section className="min-h-[80vh] flex items-center justify-center py-20">
         <Card className="w-full max-w-md border-0 card-elevated">
           <CardHeader className="text-center">
-            <Lock className="h-12 w-12 text-gold mx-auto mb-4" />
+            <Lock className="h-12 w-12 text-accent mx-auto mb-4" />
             <CardTitle className="font-display text-2xl">Admin Login</CardTitle>
           </CardHeader>
           <CardContent>
@@ -66,7 +63,7 @@ export default function AdminLoginPage() {
               </Button>
             </form>
             <p className="text-xs text-muted-foreground text-center mt-4">
-              Email: admin@nairobischool.com / Password: NairobiSchool2026!
+              Sign in with your Supabase admin account (must have admin role in user_roles).
             </p>
           </CardContent>
         </Card>

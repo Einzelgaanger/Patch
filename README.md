@@ -71,3 +71,14 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+
+## Admin dashboard setup
+
+The admin dashboard uses **Supabase Auth** and **RLS**: only users with the `admin` role can read questionnaire responses. No Edge Function is called for loading responses, so there are no CORS issues.
+
+1. **Create an admin user** in Supabase: Dashboard → Authentication → Users → Add user (e.g. email `admin@nairobischool.com`, password of your choice).
+2. **Grant the admin role**: In Supabase SQL Editor run (replace `USER_UUID` with the new user’s id from Authentication → Users):
+   ```sql
+   INSERT INTO public.user_roles (user_id, role) VALUES ('USER_UUID', 'admin');
+   ```
+3. Sign in at `/admin` with that email and password.

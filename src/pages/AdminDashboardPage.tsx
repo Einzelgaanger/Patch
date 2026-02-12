@@ -1,3 +1,8 @@
+/**
+ * Admin Dashboard — loads questionnaire responses via direct Supabase table read (RLS).
+ * DO NOT call supabase.functions.invoke("fetch-responses") or send "x-admin-key" header;
+ * that causes CORS errors on Lovable preview. Use only supabase.from("questionnaire_responses").select().
+ */
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -58,32 +63,40 @@ export default function AdminDashboardPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const isAdmin = localStorage.getItem("admin_authenticated");
-    if (!isAdmin) { navigate("/admin"); return; }
-    fetchResponses();
-  }, []);
+    let cancelled = false;
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (cancelled) return;
+      if (!session) {
+        navigate("/admin");
+        return;
+      }
+      fetchResponses();
+    });
+    return () => { cancelled = true; };
+  }, [navigate]);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chatMessages]);
 
+  // Uses direct table read + RLS (no Edge Function) so CORS is not an issue on Lovable.
   const fetchResponses = async () => {
     try {
-      const res = await supabase.functions.invoke("fetch-responses", {
-        headers: { "x-admin-key": "NairobiSchool2026!" },
-        body: { adminKey: "NairobiSchool2026!" },
-      });
-      if (res.error) throw res.error;
-      setResponses(res.data?.data || []);
-    } catch (error: any) {
-      toast.error("Failed to load responses: " + error.message);
+      const { data, error } = await supabase
+        .from("questionnaire_responses")
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      setResponses(data ?? []);
+    } catch (error: unknown) {
+      toast.error("Failed to load responses: " + (error instanceof Error ? error.message : "Unknown error"));
     } finally {
       setLoading(false);
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("admin_authenticated");
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
     navigate("/admin");
   };
 
@@ -123,7 +136,6 @@ export default function AdminDashboardPage() {
 
     try {
       const res = await supabase.functions.invoke("admin-ai-chat", {
-        headers: { "x-admin-key": "NairobiSchool2026!" },
         body: { question, adminKey: "NairobiSchool2026!" },
       });
       if (res.error) throw res.error;
