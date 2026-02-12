@@ -42,6 +42,7 @@ interface FullResponse {
   has_photos_to_share: boolean | null;
   willing_to_be_interviewed: boolean | null;
   additional_comments: string | null;
+  uploaded_files: string[] | null;
   created_at: string;
 }
 
@@ -252,6 +253,18 @@ export default function AdminDashboardPage() {
                                 {renderDetail("Additional Comments", r.additional_comments)}
                                 {r.has_photos_to_share && <div className="text-sm text-accent font-bold">📷 Has photos to share</div>}
                                 {r.willing_to_be_interviewed && <div className="text-sm text-accent font-bold">🎙️ Willing to be interviewed</div>}
+                                {r.uploaded_files && r.uploaded_files.length > 0 && (
+                                  <div className="col-span-2 mt-2">
+                                    <span className="font-bold text-foreground text-sm">Uploaded Files ({r.uploaded_files.length}):</span>
+                                    <div className="flex flex-wrap gap-2 mt-2">
+                                      {r.uploaded_files.map((url, i) => (
+                                        <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="text-xs text-accent underline hover:text-accent/80">
+                                          File {i + 1}
+                                        </a>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
                               </div>
                             </TableCell>
                           </TableRow>

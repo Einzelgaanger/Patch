@@ -49,28 +49,101 @@ serve(async (req) => {
 
     const systemPrompt = `You are an AI assistant for the Nairobi School Commemorative Book project. You help admins analyze alumni questionnaire responses. Here is the data:\n\n${summary || "No responses yet."}\n\nAnswer the admin's question based on this data. Be concise, insightful, and helpful. Use specific names and details when relevant.`;
 
-    const aiResponse = await fetch("https://zszbzriyosbtfvlfahlq.supabase.co/functions/v1/ai-proxy", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}`,
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: question },
-        ],
-      }),
-    });
+    // Try Lovable AI proxy with LOVABLE_API_KEY
+    const lovableApiKey = Deno.env.get("LOVABLE_API_KEY");
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    
+    let answer = "";
+    let succeeded = false;
 
-    if (!aiResponse.ok) {
-      const errText = await aiResponse.text();
-      throw new Error(`AI proxy error: ${errText}`);
+    // Attempt 1: Use Lovable AI via the project's Supabase URL with LOVABLE_API_KEY
+    if (lovableApiKey && !succeeded) {
+      try {
+        const aiResponse = await fetch(`${supabaseUrl}/functions/v1/ai-proxy`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${lovableApiKey}`,
+          },
+          body: JSON.stringify({
+            model: "google/gemini-2.5-flash",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: question },
+            ],
+          }),
+        });
+        if (aiResponse.ok) {
+          const aiData = await aiResponse.json();
+          answer = aiData.choices?.[0]?.message?.content || "";
+          if (answer) succeeded = true;
+        }
+      } catch (_e) { /* try next */ }
     }
 
-    const aiData = await aiResponse.json();
-    const answer = aiData.choices?.[0]?.message?.content || "I couldn't generate a response.";
+    // Attempt 2: Use Google Generative AI REST API if GOOGLE_AI_API_KEY exists
+    if (!succeeded) {
+      const googleKey = Deno.env.get("GOOGLE_AI_API_KEY");
+      if (googleKey) {
+        try {
+          const aiResponse = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${googleKey}`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                contents: [
+                  { role: "user", parts: [{ text: `${systemPrompt}\n\nQuestion: ${question}` }] },
+                ],
+              }),
+            }
+          );
+          if (aiResponse.ok) {
+            const aiData = await aiResponse.json();
+            answer = aiData.candidates?.[0]?.content?.parts?.[0]?.text || "";
+            if (answer) succeeded = true;
+          }
+        } catch (_e) { /* try next */ }
+      }
+    }
+
+    // Fallback: Simple data-driven answer
+    if (!succeeded) {
+      const total = responses?.length || 0;
+      const q = question.toLowerCase();
+      
+      if (total === 0) {
+        answer = "There are no responses yet in the database.";
+      } else if (q.includes("how many") || q.includes("total") || q.includes("count")) {
+        const prefects = responses!.filter((r: any) => r.was_prefect).length;
+        const houses: Record<string, number> = {};
+        responses!.forEach((r: any) => { houses[r.house] = (houses[r.house] || 0) + 1; });
+        const houseBreakdown = Object.entries(houses).map(([h, c]) => `${h}: ${c}`).join(", ");
+        answer = `There are ${total} total responses. ${prefects} were prefects. Breakdown by house: ${houseBreakdown}.`;
+      } else if (q.includes("prefect")) {
+        const prefects = responses!.filter((r: any) => r.was_prefect);
+        answer = prefects.length === 0 
+          ? "No prefects found in the responses." 
+          : `Found ${prefects.length} prefects: ${prefects.map((r: any) => `${r.full_name} (${r.prefect_position || "Prefect"}, ${r.house})`).join("; ")}`;
+      } else if (q.includes("house")) {
+        const houses: Record<string, string[]> = {};
+        responses!.forEach((r: any) => { (houses[r.house] = houses[r.house] || []).push(r.full_name); });
+        answer = Object.entries(houses).map(([h, names]) => `**${h}** (${names.length}): ${names.join(", ")}`).join("\n");
+      } else if (q.includes("funny") || q.includes("stories") || q.includes("story")) {
+        const stories = responses!.filter((r: any) => r.funny_stories).map((r: any) => `${r.full_name}: "${r.funny_stories}"`);
+        answer = stories.length === 0 ? "No funny stories shared yet." : stories.join("\n\n");
+      } else if (q.includes("teacher")) {
+        const teachers = responses!.filter((r: any) => r.favorite_teachers).map((r: any) => `${r.full_name}: ${r.favorite_teachers}`);
+        answer = teachers.length === 0 ? "No favourite teachers mentioned yet." : teachers.join("\n\n");
+      } else {
+        // Generic summary
+        answer = `I have ${total} responses. Here's a summary:\n` +
+          responses!.slice(0, 10).map((r: any) => 
+            `• ${r.full_name} (${r.house}, ${r.admission_year}-${r.graduation_year}) - ${r.current_profession || "N/A"}`
+          ).join("\n") +
+          (total > 10 ? `\n...and ${total - 10} more.` : "");
+      }
+    }
 
     return new Response(JSON.stringify({ answer }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

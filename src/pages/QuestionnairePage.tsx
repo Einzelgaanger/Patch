@@ -24,7 +24,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
-import { ChevronRight, ChevronLeft, Send, User, GraduationCap, BookOpen, CheckCircle, Trophy, Award } from "lucide-react";
+import { ChevronRight, ChevronLeft, Send, User, GraduationCap, BookOpen, CheckCircle, Trophy, Award, Upload, FileIcon, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { fadeIn } from "@/lib/motion";
 import { supabase } from "@/integrations/supabase/client";
@@ -40,8 +40,8 @@ const sportsList = [
 const subjectsList = [
   "Mathematics", "English", "Kiswahili", "Physics", "Chemistry", "Biology",
   "History", "Geography", "CRE", "IRE", "Business Studies", "Agriculture",
-  "Computer Studies", "Art & Design", "Music", "French", "German",
-  "Home Science", "Aviation",
+  "Computer Studies", "Art & Design", "Music", "French", "Drawing and Design",
+  "Aviation",
 ];
 
 const formSchema = z.object({
@@ -90,6 +90,8 @@ export default function QuestionnairePage() {
   const [currentStep, setCurrentStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+  const [uploading, setUploading] = useState(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -123,6 +125,28 @@ export default function QuestionnairePage() {
   async function onSubmit(values: FormValues) {
     setSubmitting(true);
     try {
+      // Upload files first
+      let filePaths: string[] = [];
+      if (uploadedFiles.length > 0) {
+        setUploading(true);
+        const timestamp = Date.now();
+        for (const file of uploadedFiles) {
+          const filePath = `${timestamp}-${Math.random().toString(36).slice(2)}/${file.name}`;
+          const { error: uploadError } = await supabase.storage
+            .from("questionnaire-uploads")
+            .upload(filePath, file);
+          if (uploadError) {
+            console.error("Upload error:", uploadError);
+            continue;
+          }
+          const { data: urlData } = supabase.storage
+            .from("questionnaire-uploads")
+            .getPublicUrl(filePath);
+          filePaths.push(urlData.publicUrl);
+        }
+        setUploading(false);
+      }
+
       const { error } = await supabase.from("questionnaire_responses").insert({
         full_name: values.fullName,
         email: values.email || null,
@@ -151,6 +175,7 @@ export default function QuestionnairePage() {
         has_photos_to_share: values.hasPhotosToShare,
         willing_to_be_interviewed: values.willingToBeInterviewed,
         additional_comments: values.additionalComments || null,
+        uploaded_files: filePaths.length > 0 ? filePaths : null,
       });
 
       if (error) throw error;
@@ -162,8 +187,19 @@ export default function QuestionnairePage() {
       toast.error("Failed to submit", { description: error.message });
     } finally {
       setSubmitting(false);
+      setUploading(false);
     }
   }
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setUploadedFiles((prev) => [...prev, ...Array.from(e.target.files!)]);
+    }
+  };
+
+  const removeFile = (index: number) => {
+    setUploadedFiles((prev) => prev.filter((_, i) => i !== index));
+  };
 
   if (submitted) {
     return (
@@ -411,6 +447,42 @@ export default function QuestionnairePage() {
                           <FormField control={form.control} name="additionalComments" render={({ field }) => (
                             <FormItem><FormLabel>Additional Comments</FormLabel><FormControl><Textarea className="rounded-xl min-h-[80px]" placeholder="Anything else you'd like to share..." {...field} /></FormControl><FormMessage /></FormItem>
                           )} />
+                          {/* File Upload Section */}
+                          <div className="space-y-3">
+                            <FormLabel>Upload Photos, Videos, or Documents</FormLabel>
+                            <p className="text-sm text-muted-foreground">
+                              Share any photos, videos, PDFs, or other files that could help with the book. No limits on file size or number.
+                            </p>
+                            <div className="border-2 border-dashed border-border rounded-xl p-6 text-center hover:border-accent transition-colors">
+                              <Upload className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
+                              <label className="cursor-pointer">
+                                <span className="text-accent font-medium hover:underline">Click to upload files</span>
+                                <input
+                                  type="file"
+                                  multiple
+                                  accept="image/*,video/*,.pdf,.doc,.docx,.xls,.xlsx"
+                                  className="hidden"
+                                  onChange={handleFileSelect}
+                                />
+                              </label>
+                              <p className="text-xs text-muted-foreground mt-1">Images, videos, PDFs, documents — any format welcome</p>
+                            </div>
+                            {uploadedFiles.length > 0 && (
+                              <div className="space-y-2">
+                                {uploadedFiles.map((file, i) => (
+                                  <div key={i} className="flex items-center gap-3 p-3 bg-secondary rounded-xl">
+                                    <FileIcon className="h-4 w-4 text-muted-foreground shrink-0" />
+                                    <span className="text-sm truncate flex-1">{file.name}</span>
+                                    <span className="text-xs text-muted-foreground">{(file.size / 1024 / 1024).toFixed(1)} MB</span>
+                                    <button type="button" onClick={() => removeFile(i)} className="text-muted-foreground hover:text-destructive">
+                                      <X className="h-4 w-4" />
+                                    </button>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+
                           <div className="space-y-3">
                             <label className="flex items-center gap-3 p-4 rounded-xl border border-border cursor-pointer hover:bg-secondary">
                               <Checkbox checked={form.watch("hasPhotosToShare")} onCheckedChange={(v) => form.setValue("hasPhotosToShare", !!v)} />
@@ -446,8 +518,8 @@ export default function QuestionnairePage() {
                           Next <ChevronRight className="ml-2 h-4 w-4" />
                         </Button>
                       ) : (
-                        <Button type="submit" variant="hero" className="rounded-xl" disabled={submitting}>
-                          {submitting ? "Submitting..." : <><Send className="mr-2 h-4 w-4" /> Submit Story</>}
+                        <Button type="submit" variant="hero" className="rounded-xl" disabled={submitting || uploading}>
+                          {uploading ? "Uploading files..." : submitting ? "Submitting..." : <><Send className="mr-2 h-4 w-4" /> Submit Story</>}
                         </Button>
                       )}
                     </div>
