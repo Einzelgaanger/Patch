@@ -42,6 +42,7 @@ export type Database = {
           subjects_taken: string[] | null
           traditions_remembered: string | null
           updated_at: string
+          uploaded_files: string[] | null
           was_club_leader: boolean | null
           was_prefect: boolean | null
           was_sports_captain: boolean | null
@@ -74,6 +75,7 @@ export type Database = {
           subjects_taken?: string[] | null
           traditions_remembered?: string | null
           updated_at?: string
+          uploaded_files?: string[] | null
           was_club_leader?: boolean | null
           was_prefect?: boolean | null
           was_sports_captain?: boolean | null
@@ -106,6 +108,7 @@ export type Database = {
           subjects_taken?: string[] | null
           traditions_remembered?: string | null
           updated_at?: string
+          uploaded_files?: string[] | null
           was_club_leader?: boolean | null
           was_prefect?: boolean | null
           was_sports_captain?: boolean | null
