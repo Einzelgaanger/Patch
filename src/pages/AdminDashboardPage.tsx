@@ -146,10 +146,10 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="bg-primary text-primary-foreground p-4 sticky top-0 z-50">
-        <div className="container mx-auto flex justify-between items-center">
-          <h1 className="font-display text-xl font-bold">Admin Dashboard</h1>
-          <div className="flex items-center gap-3">
+      <header className="bg-primary text-primary-foreground p-3 sm:p-4 sticky top-0 z-50">
+        <div className="container mx-auto flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3">
+          <h1 className="font-display text-lg sm:text-xl font-bold">Admin Dashboard</h1>
+          <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
             <Button variant="outline" size="sm" onClick={() => setChatOpen(!chatOpen)} className="gap-1 border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10">
               <MessageCircle className="h-4 w-4" /> AI Assistant
             </Button>
@@ -160,25 +160,25 @@ export default function AdminDashboardPage() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-3 sm:px-4 py-6 sm:py-8">
         {/* Stats Cards */}
-        <div className="grid md:grid-cols-4 gap-4 mb-8">
-          <Card className="border-0 card-elevated"><CardContent className="pt-6 text-center">
-            <Users className="h-8 w-8 text-accent mx-auto mb-2" />
-            <p className="font-display text-3xl font-bold">{responses.length}</p>
-            <p className="text-muted-foreground text-sm">Total Responses</p>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
+          <Card className="border-0 card-elevated"><CardContent className="pt-4 sm:pt-6 text-center px-3 sm:px-6">
+            <Users className="h-6 w-6 sm:h-8 sm:w-8 text-accent mx-auto mb-2" />
+            <p className="font-display text-2xl sm:text-3xl font-bold">{responses.length}</p>
+            <p className="text-muted-foreground text-xs sm:text-sm">Total Responses</p>
           </CardContent></Card>
-          <Card className="border-0 card-elevated"><CardContent className="pt-6 text-center">
-            <p className="font-display text-3xl font-bold text-accent">{responses.filter((r) => r.was_prefect).length}</p>
-            <p className="text-muted-foreground text-sm">Were Prefects</p>
+          <Card className="border-0 card-elevated"><CardContent className="pt-4 sm:pt-6 text-center px-3 sm:px-6">
+            <p className="font-display text-2xl sm:text-3xl font-bold text-accent">{responses.filter((r) => r.was_prefect).length}</p>
+            <p className="text-muted-foreground text-xs sm:text-sm">Were Prefects</p>
           </CardContent></Card>
-          <Card className="border-0 card-elevated"><CardContent className="pt-6 text-center">
-            <p className="font-display text-3xl font-bold">{responses.filter((r) => r.willing_to_be_interviewed).length}</p>
-            <p className="text-muted-foreground text-sm">Want Interviews</p>
+          <Card className="border-0 card-elevated"><CardContent className="pt-4 sm:pt-6 text-center px-3 sm:px-6">
+            <p className="font-display text-2xl sm:text-3xl font-bold">{responses.filter((r) => r.willing_to_be_interviewed).length}</p>
+            <p className="text-muted-foreground text-xs sm:text-sm">Want Interviews</p>
           </CardContent></Card>
-          <Card className="border-0 card-elevated"><CardContent className="pt-6 text-center">
-            <p className="font-display text-3xl font-bold">{responses.filter((r) => r.has_photos_to_share).length}</p>
-            <p className="text-muted-foreground text-sm">Have Photos</p>
+          <Card className="border-0 card-elevated"><CardContent className="pt-4 sm:pt-6 text-center px-3 sm:px-6">
+            <p className="font-display text-2xl sm:text-3xl font-bold">{responses.filter((r) => r.has_photos_to_share).length}</p>
+            <p className="text-muted-foreground text-xs sm:text-sm">Have Photos</p>
           </CardContent></Card>
         </div>
 
@@ -186,13 +186,13 @@ export default function AdminDashboardPage() {
         <Card className="border-0 card-elevated">
           <CardHeader className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <CardTitle>Questionnaire Responses</CardTitle>
-            <div className="flex flex-wrap gap-2 items-center">
-              <div className="relative">
+            <div className="flex flex-wrap gap-2 items-center w-full md:w-auto">
+              <div className="relative flex-1 min-w-[180px] md:min-w-0 md:flex-initial">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input placeholder="Search name, email, profession..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9 w-64" />
+                <Input placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9 w-full md:w-64" />
               </div>
               <Select value={houseFilter} onValueChange={setHouseFilter}>
-                <SelectTrigger className="w-40"><Filter className="h-4 w-4 mr-2" /><SelectValue /></SelectTrigger>
+                <SelectTrigger className="w-full sm:w-40"><Filter className="h-4 w-4 mr-2 shrink-0" /><SelectValue /></SelectTrigger>
                 <SelectContent>{houses.map((h) => (<SelectItem key={h} value={h}>{h}</SelectItem>))}</SelectContent>
               </Select>
               <Button variant="outline" size="sm" onClick={exportCSV} className="gap-1">
@@ -281,7 +281,7 @@ export default function AdminDashboardPage() {
 
       {/* AI Chat Panel */}
       {chatOpen && (
-        <div className="fixed bottom-6 right-6 w-96 max-h-[600px] bg-card rounded-2xl shadow-2xl border border-border flex flex-col z-50 overflow-hidden">
+        <div className="fixed inset-4 sm:inset-auto sm:bottom-6 sm:right-6 sm:w-96 w-[calc(100vw-2rem)] max-h-[85vh] sm:max-h-[600px] bg-card rounded-2xl shadow-2xl border border-border flex flex-col z-50 overflow-hidden">
           <div className="bg-primary text-primary-foreground p-4 flex justify-between items-center">
             <h3 className="font-display font-bold">AI Assistant</h3>
             <button onClick={() => setChatOpen(false)}><X className="h-5 w-5" /></button>

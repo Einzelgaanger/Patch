@@ -221,17 +221,17 @@ export default function QuestionnairePage() {
       <div className="min-h-screen pt-24 pb-20 bg-background relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full bg-dots opacity-40 pointer-events-none" />
 
-        <div className="container mx-auto px-4 relative z-10">
+        <div className="container mx-auto px-4 sm:px-6 relative z-10">
           <motion.div initial="hidden" animate="show" variants={fadeIn("up", 0.2)} className="relative max-w-4xl mx-auto">
-            <div className="text-center mb-12">
-              <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-4">Share Your Story</h1>
-              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+            <div className="text-center mb-8 sm:mb-12">
+              <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-3 sm:mb-4">Share Your Story</h1>
+              <p className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto px-2">
                 Your memories are the bricks that build our legacy. Help us document the true spirit of the Patch.
               </p>
             </div>
 
             {/* Progress Steps */}
-            <div className="flex justify-between items-center mb-12 relative px-2 md:px-8">
+            <div className="flex justify-between items-center mb-8 sm:mb-12 relative px-0 sm:px-2 md:px-8">
               <div className="absolute left-0 top-1/2 w-full h-1 bg-primary/10 -z-10" />
               <div
                 className="absolute left-0 top-1/2 h-1 bg-accent -z-10 transition-all duration-500"
@@ -254,7 +254,7 @@ export default function QuestionnairePage() {
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 <Card className="card-elevated border-0 overflow-hidden">
-                  <CardContent className="p-6 md:p-8">
+                  <CardContent className="p-4 sm:p-6 md:p-8">
                     <AnimatePresence mode="wait">
 
                       {/* Step 1: Personal Info */}

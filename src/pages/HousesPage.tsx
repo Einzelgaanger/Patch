@@ -81,13 +81,17 @@ export default function HousesPage() {
   return (
     <Layout>
       {/* Hero */}
-      <section className="py-20 section-navy">
-        <div className="container mx-auto px-4 text-center">
-          <Building2 className="h-16 w-16 text-accent mx-auto mb-6" />
-          <h1 className="font-display text-5xl md:text-6xl font-bold text-primary-foreground mb-6">
+      <section className="relative py-16 sm:py-20 section-navy overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <img src="/onehouseimage.jpg" alt="" className="w-full h-full object-cover object-center opacity-25" />
+          <div className="absolute inset-0 bg-primary/85" />
+        </div>
+        <div className="container mx-auto px-4 sm:px-6 text-center relative z-10">
+          <Building2 className="h-12 w-12 sm:h-16 sm:w-16 text-accent mx-auto mb-4 sm:mb-6" />
+          <h1 className="font-display text-4xl sm:text-5xl md:text-6xl font-bold text-primary-foreground mb-4 sm:mb-6">
             The Eight Houses
           </h1>
-          <p className="text-primary-foreground/70 max-w-2xl mx-auto text-lg">
+          <p className="text-primary-foreground/70 max-w-2xl mx-auto text-base sm:text-lg px-2">
             Each house is more than just a dormitory — it's a family. The friendly 
             rivalries and deep bonds formed here last a lifetime.
           </p>
@@ -95,37 +99,37 @@ export default function HousesPage() {
       </section>
 
       {/* Houses Grid */}
-      <section className="py-20 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 gap-8">
+      <section className="py-12 sm:py-16 md:py-20 bg-background">
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="grid md:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
             {houses.map((house) => (
               <Card
                 key={house.name}
                 className="overflow-hidden border-0 card-elevated group hover:-translate-y-1 transition-all duration-300"
               >
                 <div className={`h-2 ${house.color}`} />
-                <CardHeader className="pb-2">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
+                <CardHeader className="pb-2 px-4 sm:px-6">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-3 sm:gap-4 min-w-0">
                       <div
-                        className={`w-14 h-14 rounded-xl ${house.color} flex items-center justify-center shadow-lg`}
+                        className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl ${house.color} flex items-center justify-center shadow-lg shrink-0`}
                       >
-                        <Building2 className="h-7 w-7 text-white" />
+                        <Building2 className="h-6 w-6 sm:h-7 sm:w-7 text-white" />
                       </div>
-                      <div>
-                        <CardTitle className="font-display text-2xl text-foreground">
+                      <div className="min-w-0">
+                        <CardTitle className="font-display text-xl sm:text-2xl text-foreground truncate">
                           {house.name} House
                         </CardTitle>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-xs sm:text-sm text-muted-foreground">
                           Formerly: {house.oldName}
                         </p>
                       </div>
                     </div>
-                    <Flag className={`h-6 w-6 ${house.textColor}`} />
+                    <Flag className={`h-5 w-5 sm:h-6 sm:w-6 ${house.textColor} shrink-0`} />
                   </div>
                 </CardHeader>
-                <CardContent className="pt-4">
-                  <p className="text-muted-foreground text-sm leading-relaxed mb-4">
+                <CardContent className="pt-4 px-4 sm:px-6 pb-4 sm:pb-6">
+                  <p className="text-muted-foreground text-xs sm:text-sm leading-relaxed mb-3 sm:mb-4">
                     {house.description}
                   </p>
                   <div className="flex items-center gap-2 flex-wrap">
@@ -147,13 +151,13 @@ export default function HousesPage() {
       </section>
 
       {/* House Rivalry */}
-      <section className="py-20 section-cream">
-        <div className="container mx-auto px-4 text-center">
-          <Users className="h-12 w-12 text-accent mx-auto mb-6" />
-          <h2 className="font-display text-3xl font-bold text-foreground mb-6">
+      <section className="py-12 sm:py-16 md:py-20 section-cream">
+        <div className="container mx-auto px-4 sm:px-6 text-center">
+          <Users className="h-10 w-10 sm:h-12 sm:w-12 text-accent mx-auto mb-4 sm:mb-6" />
+          <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-4 sm:mb-6">
             The Spirit of Competition
           </h2>
-          <p className="text-muted-foreground max-w-3xl mx-auto text-lg leading-relaxed">
+          <p className="text-muted-foreground max-w-3xl mx-auto text-base sm:text-lg leading-relaxed px-2">
             The house system at Nairobi School fosters healthy competition across academics, 
             sports, and character development. Annual inter-house competitions in rugby, 
             athletics, swimming, and academics bring out the best in every Patcherian. 

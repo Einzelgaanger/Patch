@@ -49,21 +49,20 @@ serve(async (req) => {
 
     const systemPrompt = `You are an AI assistant for the Nairobi School Commemorative Book project. You help admins analyze alumni questionnaire responses. Here is the data:\n\n${summary || "No responses yet."}\n\nAnswer the admin's question based on this data. Be concise, insightful, and helpful. Use specific names and details when relevant.`;
 
-    // Try Lovable AI proxy with LOVABLE_API_KEY
-    const lovableApiKey = Deno.env.get("LOVABLE_API_KEY");
+    // AI proxy (Supabase Edge Function or project AI endpoint)
+    const aiApiKey = Deno.env.get("LOVABLE_API_KEY") ?? Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    
+
     let answer = "";
     let succeeded = false;
 
-    // Attempt 1: Use Lovable AI via the project's Supabase URL with LOVABLE_API_KEY
-    if (lovableApiKey && !succeeded) {
+    if (aiApiKey && !succeeded) {
       try {
         const aiResponse = await fetch(`${supabaseUrl}/functions/v1/ai-proxy`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${lovableApiKey}`,
+            "Authorization": `Bearer ${aiApiKey}`,
           },
           body: JSON.stringify({
             model: "google/gemini-2.5-flash",

@@ -77,15 +77,19 @@ export default function HistoryPage() {
   return (
     <Layout>
       {/* Hero */}
-      <section className="py-20 section-navy">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-accent font-medium tracking-widest uppercase mb-4">
+      <section className="relative py-16 sm:py-20 section-navy overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <img src="/quadimage.webp" alt="" className="w-full h-full object-cover opacity-20" />
+          <div className="absolute inset-0 bg-primary/90" />
+        </div>
+        <div className="container mx-auto px-4 sm:px-6 text-center relative z-10">
+          <p className="text-accent font-medium tracking-widest uppercase mb-3 sm:mb-4 text-sm sm:text-base">
             Since 1902
           </p>
-          <h1 className="font-display text-5xl md:text-6xl font-bold text-primary-foreground mb-6">
+          <h1 className="font-display text-4xl sm:text-5xl md:text-6xl font-bold text-primary-foreground mb-4 sm:mb-6">
             Our Rich History
           </h1>
-          <p className="text-primary-foreground/70 max-w-2xl mx-auto text-lg">
+          <p className="text-primary-foreground/70 max-w-2xl mx-auto text-base sm:text-lg px-2">
             From the Prince of Wales School to Nairobi School — over a century of 
             academic excellence, sporting prowess, and character formation.
           </p>
@@ -93,11 +97,11 @@ export default function HistoryPage() {
       </section>
 
       {/* Overview */}
-      <section className="py-20 section-cream">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 gap-12 items-center max-w-5xl mx-auto">
+      <section className="py-12 sm:py-16 md:py-20 section-cream">
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="grid md:grid-cols-2 gap-8 sm:gap-12 items-center max-w-5xl mx-auto">
             <div>
-              <h2 className="font-display text-3xl font-bold text-foreground mb-6">
+              <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-4 sm:mb-6">
                 The Prince of Wales Legacy
               </h2>
               <p className="text-muted-foreground leading-relaxed mb-4">
@@ -117,9 +121,9 @@ export default function HistoryPage() {
                 motto <span className="text-accent font-semibold">"TO THE UTTERMOST"</span>.
               </p>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4">
               <Card className="border-0 card-elevated">
-                <CardContent className="p-6 text-center">
+                <CardContent className="p-4 sm:p-6 text-center">
                   <Calendar className="h-8 w-8 text-accent mx-auto mb-3" />
                   <p className="font-display text-2xl font-bold text-foreground">1902</p>
                   <p className="text-sm text-muted-foreground">Founded</p>
@@ -152,30 +156,30 @@ export default function HistoryPage() {
       </section>
 
       {/* Timeline */}
-      <section className="py-20 bg-background">
-        <div className="container mx-auto px-4">
-          <h2 className="font-display text-4xl font-bold text-center text-foreground mb-16">
+      <section className="py-12 sm:py-16 md:py-20 bg-background">
+        <div className="container mx-auto px-4 sm:px-6">
+          <h2 className="font-display text-3xl sm:text-4xl font-bold text-center text-foreground mb-10 sm:mb-16">
             Timeline of Excellence
           </h2>
           
           <div className="max-w-3xl mx-auto">
             {timeline.map((item, index) => (
-              <div key={index} className="relative pl-8 pb-12 last:pb-0">
+              <div key={index} className="relative pl-6 sm:pl-8 pb-8 sm:pb-12 last:pb-0">
                 {/* Line */}
                 {index !== timeline.length - 1 && (
                   <div className="absolute left-3 top-3 w-0.5 h-full bg-accent/30" />
                 )}
                 {/* Dot */}
-                <div className="absolute left-0 top-1 w-6 h-6 rounded-full bg-accent flex items-center justify-center">
+                <div className="absolute left-0 top-1 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-accent flex items-center justify-center">
                   <div className="w-2 h-2 rounded-full bg-primary" />
                 </div>
                 {/* Content */}
-                <div className="bg-card rounded-xl p-6 shadow-soft ml-4">
-                  <span className="text-accent font-bold text-lg">{item.year}</span>
-                  <h3 className="font-display text-xl font-semibold text-foreground mt-1 mb-2">
+                <div className="bg-card rounded-xl p-4 sm:p-6 shadow-soft ml-2 sm:ml-4">
+                  <span className="text-accent font-bold text-base sm:text-lg">{item.year}</span>
+                  <h3 className="font-display text-lg sm:text-xl font-semibold text-foreground mt-1 mb-2">
                     {item.title}
                   </h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
+                  <p className="text-muted-foreground text-xs sm:text-sm leading-relaxed">
                     {item.description}
                   </p>
                 </div>
@@ -186,22 +190,22 @@ export default function HistoryPage() {
       </section>
 
       {/* House Renaming */}
-      <section className="py-20 section-navy">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="font-display text-4xl font-bold text-primary-foreground mb-4">
+      <section className="py-12 sm:py-16 md:py-20 section-navy">
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="font-display text-3xl sm:text-4xl font-bold text-primary-foreground mb-3 sm:mb-4">
               The House Names
             </h2>
-            <p className="text-primary-foreground/70 max-w-2xl mx-auto">
+            <p className="text-primary-foreground/70 max-w-2xl mx-auto text-sm sm:text-base">
               After independence, the houses were renamed to reflect Kenyan landmarks, 
               replacing the colonial names while preserving the spirit of competition and brotherhood.
             </p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 max-w-4xl mx-auto">
             {houseRename.map((house, index) => (
               <Card key={index} className="bg-white/5 border-accent/20">
-                <CardContent className="p-4 text-center">
+                <CardContent className="p-3 sm:p-4 text-center">
                   <p className="text-primary-foreground/50 text-sm line-through mb-1">{house.old}</p>
                   <Flag className="h-5 w-5 text-accent mx-auto my-2" />
                   <p className="text-primary-foreground font-display font-semibold">{house.new}</p>
@@ -213,11 +217,11 @@ export default function HistoryPage() {
       </section>
 
       {/* The Chapel */}
-      <section className="py-20 section-cream">
-        <div className="container mx-auto px-4">
+      <section className="py-12 sm:py-16 md:py-20 section-cream">
+        <div className="container mx-auto px-4 sm:px-6">
           <div className="max-w-3xl mx-auto text-center">
-            <BookOpen className="h-12 w-12 text-accent mx-auto mb-6" />
-            <h2 className="font-display text-3xl font-bold text-foreground mb-6">
+            <BookOpen className="h-10 w-10 sm:h-12 sm:w-12 text-accent mx-auto mb-4 sm:mb-6" />
+            <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-4 sm:mb-6">
               The School Chapel
             </h2>
             <blockquote className="text-muted-foreground italic text-lg leading-relaxed border-l-4 border-accent pl-6 text-left">
