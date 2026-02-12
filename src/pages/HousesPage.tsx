@@ -83,8 +83,8 @@ export default function HousesPage() {
       {/* Hero */}
       <section className="relative py-16 sm:py-20 section-navy overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <img src="/onehouseimage.jpg" alt="" className="w-full h-full object-cover object-center opacity-25" />
-          <div className="absolute inset-0 bg-primary/85" />
+          <img src="/onehouseimage.jpg" alt="" className="w-full h-full object-cover object-center opacity-70" />
+          <div className="absolute inset-0 bg-primary/50" />
         </div>
         <div className="container mx-auto px-4 sm:px-6 text-center relative z-10">
           <Building2 className="h-12 w-12 sm:h-16 sm:w-16 text-accent mx-auto mb-4 sm:mb-6" />
