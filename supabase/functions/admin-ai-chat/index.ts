@@ -33,20 +33,36 @@ serve(async (req) => {
     if (dbError) throw dbError;
 
     const dataSummary = (responses || []).map((r: any) => (
-      `Name: ${r.full_name} | House: ${r.house} | Years: ${r.admission_year}-${r.graduation_year} | ` +
+      `Name: ${r.full_name} | Nickname: ${r.school_nickname || "N/A"} | House: ${r.house} | Years: ${r.admission_year}-${r.graduation_year} | ` +
       `Adm#: ${r.admission_number || "N/A"} | Email: ${r.email || "N/A"} | Phone: ${r.phone || "N/A"} | ` +
       `Profession: ${r.current_profession || "N/A"} | Location: ${r.current_location || "N/A"} | ` +
+      `Dormitory: ${r.dormitory_name || "N/A"} | ` +
       `Subjects: ${r.subjects_taken?.join(", ") || "N/A"} | ` +
+      `Clubs: ${r.clubs_societies?.join(", ") || "N/A"} | ` +
       `Prefect: ${r.was_prefect ? (r.prefect_position || "Yes") : "No"} | ` +
       `Sports Captain: ${r.was_sports_captain ? (r.sports_captain_details || "Yes") : "No"} | ` +
       `Club Leader: ${r.was_club_leader ? (r.club_leader_details || "Yes") : "No"} | ` +
       `Sports: ${r.sports_participated?.join(", ") || "N/A"} | ` +
+      `Headmaster: ${r.headmaster_name || "N/A"} | Deputy: ${r.deputy_headmaster_name || "N/A"} | ` +
+      `Housemaster: ${r.housemaster_name || "N/A"} | Class Teachers: ${r.class_teacher_names || "N/A"} | ` +
+      `School Captain: ${r.school_captain_name || "N/A"} | House Captain: ${r.house_captain_name || "N/A"} | ` +
       `Favorite Teachers: ${r.favorite_teachers || "N/A"} | ` +
+      `Uniform: ${r.uniform_memories || "N/A"} | ` +
+      `Daily Routine: ${r.daily_routine_memories || "N/A"} | ` +
+      `Dining: ${r.dining_memories || "N/A"} | Fav Meals: ${r.favorite_meals || "N/A"} | ` +
+      `Dorm Life: ${r.dormitory_memories || "N/A"} | ` +
+      `Weekends: ${r.weekend_activities || "N/A"} | ` +
+      `Punishments: ${r.punishments_memories || "N/A"} | ` +
       `Memorable Events: ${r.memorable_events || "N/A"} | ` +
       `Funny Stories: ${r.funny_stories || "N/A"} | ` +
+      `Rivalries: ${r.rivalry_memories || "N/A"} | ` +
+      `Cultural Events: ${r.cultural_events || "N/A"} | ` +
+      `Religious Life: ${r.religious_life || "N/A"} | ` +
+      `Changes Witnessed: ${r.significant_changes || "N/A"} | ` +
       `Academic: ${r.academic_achievements || "N/A"} | ` +
       `Sports Achievements: ${r.sports_achievements || "N/A"} | ` +
       `Career: ${r.career_achievements || "N/A"} | ` +
+      `Advice: ${r.advice_to_current || "N/A"} | ` +
       `Traditions: ${r.traditions_remembered || "N/A"} | ` +
       `Comments: ${r.additional_comments || "N/A"} | ` +
       `Photos: ${r.has_photos_to_share ? "Yes" : "No"} | ` +
@@ -63,23 +79,23 @@ ${dataSummary || "No responses yet."}
 === END DATABASE ===
 
 You can answer ANY question about this data:
-- Individual person lookups (by name, house, year, profession, etc.)
-- Group analysis (by house, year range, sport, subject, etc.)
+- Individual person lookups (by name, house, year, nickname, profession, etc.)
+- Group analysis (by house, year range, sport, subject, club, etc.)
 - Statistics and counts
-- Finding specific stories, achievements, traditions
+- Finding specific stories, achievements, traditions, dining memories, uniform descriptions
 - Cross-referencing data (e.g. "who played rugby AND was a prefect?")
+- School leader lookups (headmasters, housemasters, school captains by year)
+- Daily life comparisons across eras (food, routines, punishments, dress codes)
 - Generating summaries for book chapters
 - Finding patterns and insights
 
 Be thorough, specific, and use actual names and details from the data. Format responses with markdown for readability.`;
 
-    // Build messages array with conversation history
     const messages = [
       { role: "system", content: systemPrompt },
       ...(body.messages || []),
     ];
 
-    // If there's a single question (legacy), convert it
     if (body.question && !body.messages) {
       messages.push({ role: "user", content: body.question });
     }
@@ -99,6 +115,9 @@ Be thorough, specific, and use actual names and details from the data. Format re
     });
 
     if (!aiResponse.ok) {
+      const errText = await aiResponse.text();
+      console.error("AI gateway error:", aiResponse.status, errText);
+      
       if (aiResponse.status === 429) {
         return new Response(JSON.stringify({ error: "Rate limit exceeded. Please wait a moment and try again." }), {
           status: 429,
@@ -111,9 +130,7 @@ Be thorough, specific, and use actual names and details from the data. Format re
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
-      const errText = await aiResponse.text();
-      console.error("AI gateway error:", aiResponse.status, errText);
-      throw new Error(`AI gateway error: ${aiResponse.status}`);
+      throw new Error(`AI gateway error: ${aiResponse.status} - ${errText}`);
     }
 
     // Stream the response back
