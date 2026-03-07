@@ -405,17 +405,38 @@ export default function AdminDashboardPage() {
                                     {renderDetail("Phone", r.phone)}
                                     {renderDetail("Location", r.current_location)}
                                     {renderDetail("Admission #", r.admission_number)}
+                                    {renderDetail("Nickname", (r as any).school_nickname)}
+                                    {renderDetail("Dormitory", (r as any).dormitory_name)}
                                     {renderDetail("Subjects", r.subjects_taken?.join(", "))}
+                                    {renderDetail("Clubs & Societies", (r as any).clubs_societies?.join(", "))}
                                     {renderDetail("Sports", r.sports_participated?.join(", "))}
                                     {renderDetail("Sports Captain", r.was_sports_captain ? (r.sports_captain_details || "Yes") : null)}
                                     {renderDetail("Club Leader", r.was_club_leader ? (r.club_leader_details || "Yes") : null)}
+                                    {renderDetail("Headmaster", (r as any).headmaster_name)}
+                                    {renderDetail("Deputy Headmaster", (r as any).deputy_headmaster_name)}
+                                    {renderDetail("Housemaster", (r as any).housemaster_name)}
+                                    {renderDetail("Class Teachers", (r as any).class_teacher_names)}
+                                    {renderDetail("School Captain", (r as any).school_captain_name)}
+                                    {renderDetail("House Captain", (r as any).house_captain_name)}
+                                    {renderDetail("Favourite Teachers", r.favorite_teachers)}
+                                    {renderDetail("Uniform Memories", (r as any).uniform_memories)}
+                                    {renderDetail("Daily Routine", (r as any).daily_routine_memories)}
+                                    {renderDetail("Dining Memories", (r as any).dining_memories)}
+                                    {renderDetail("Favourite Meals", (r as any).favorite_meals)}
+                                    {renderDetail("Dormitory Life", (r as any).dormitory_memories)}
+                                    {renderDetail("Weekend Activities", (r as any).weekend_activities)}
+                                    {renderDetail("Punishments", (r as any).punishments_memories)}
+                                    {renderDetail("Memorable Events", r.memorable_events)}
+                                    {renderDetail("Funny Stories", r.funny_stories)}
+                                    {renderDetail("Rivalries", (r as any).rivalry_memories)}
+                                    {renderDetail("Cultural Events", (r as any).cultural_events)}
+                                    {renderDetail("Religious Life", (r as any).religious_life)}
+                                    {renderDetail("Significant Changes", (r as any).significant_changes)}
+                                    {renderDetail("Traditions", r.traditions_remembered)}
                                     {renderDetail("Academic Achievements", r.academic_achievements)}
                                     {renderDetail("Sports Achievements", r.sports_achievements)}
                                     {renderDetail("Career Achievements", r.career_achievements)}
-                                    {renderDetail("Favourite Teachers", r.favorite_teachers)}
-                                    {renderDetail("Memorable Events", r.memorable_events)}
-                                    {renderDetail("Funny Stories", r.funny_stories)}
-                                    {renderDetail("Traditions", r.traditions_remembered)}
+                                    {renderDetail("Advice to Current Students", (r as any).advice_to_current)}
                                     {renderDetail("Additional Comments", r.additional_comments)}
                                     {r.has_photos_to_share && <div className="text-sm text-accent font-bold">📷 Has photos to share</div>}
                                     {r.willing_to_be_interviewed && <div className="text-sm text-accent font-bold">🎙️ Willing to be interviewed</div>}
@@ -423,7 +444,7 @@ export default function AdminDashboardPage() {
                                       <div className="col-span-2 mt-2">
                                         <span className="font-bold text-foreground text-sm">Uploaded Files ({r.uploaded_files.length}):</span>
                                         <div className="flex flex-wrap gap-2 mt-2">
-                                          {r.uploaded_files.map((url, i) => (
+                                          {r.uploaded_files.map((url: string, i: number) => (
                                             <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="text-xs text-accent underline hover:text-accent/80">File {i + 1}</a>
                                           ))}
                                         </div>
