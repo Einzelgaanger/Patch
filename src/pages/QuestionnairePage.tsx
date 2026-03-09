@@ -44,16 +44,16 @@ const clubsList = [
 ];
 
 const formSchema = z.object({
-  fullName: z.string().trim().min(2, "Name must be at least 2 characters.").max(100),
+  fullName: z.string().trim().max(100).optional().or(z.literal("")),
   email: z.string().trim().email("Please enter a valid email.").max(255).optional().or(z.literal("")),
   phone: z.string().trim().max(20).optional().or(z.literal("")),
   currentLocation: z.string().trim().max(100).optional().or(z.literal("")),
   currentProfession: z.string().trim().max(100).optional().or(z.literal("")),
   admissionNumber: z.string().trim().max(20).optional().or(z.literal("")),
   schoolNickname: z.string().trim().max(100).optional().or(z.literal("")),
-  admissionYear: z.string().regex(/^\d{4}$/, "Must be a valid 4-digit year."),
-  graduationYear: z.string().regex(/^\d{4}$/, "Must be a valid 4-digit year."),
-  house: z.string().min(1, "Please select your house."),
+  admissionYear: z.string().regex(/^\d{4}$/, "Must be a valid 4-digit year.").optional().or(z.literal("")),
+  graduationYear: z.string().regex(/^\d{4}$/, "Must be a valid 4-digit year.").optional().or(z.literal("")),
+  house: z.string().optional().or(z.literal("")),
   dormitoryName: z.string().trim().max(100).optional().or(z.literal("")),
   subjectsTaken: z.array(z.string()).optional(),
   sportsParticipated: z.array(z.string()).optional(),
@@ -113,7 +113,7 @@ const formSchema = z.object({
   hasPhotosToShare: z.boolean().default(false),
   willingToBeInterviewed: z.boolean().default(false),
   additionalComments: z.string().trim().max(2000).optional().or(z.literal("")),
-  consentToPublish: z.boolean().refine((val) => val === true, "You must agree to the terms to submit."),
+  consentToPublish: z.boolean().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -164,14 +164,8 @@ export default function QuestionnairePage() {
     },
   });
 
-  const nextStep = async () => {
-    let fields: (keyof FormValues)[] = [];
-    if (currentStep === 1) fields = ["fullName", "email", "phone", "currentLocation", "currentProfession"];
-    else if (currentStep === 2) fields = ["admissionYear", "graduationYear", "house"];
-    else if (currentStep === 3) fields = ["wasPrefect", "wasSportsCaptain", "wasClubLeader"];
-
-    const isValid = await form.trigger(fields);
-    if (isValid) setCurrentStep((prev) => Math.min(prev + 1, steps.length));
+  const nextStep = () => {
+    setCurrentStep((prev) => Math.min(prev + 1, steps.length));
   };
 
   const prevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 1));
@@ -198,16 +192,16 @@ export default function QuestionnairePage() {
       }
 
       const { error } = await supabase.from("questionnaire_responses").insert({
-        full_name: values.fullName,
+        full_name: values.fullName || "Anonymous",
         email: values.email || null,
         phone: values.phone || null,
         current_location: values.currentLocation || null,
         current_profession: values.currentProfession || null,
         admission_number: values.admissionNumber || null,
         school_nickname: values.schoolNickname || null,
-        admission_year: parseInt(values.admissionYear),
-        graduation_year: parseInt(values.graduationYear),
-        house: values.house,
+        admission_year: values.admissionYear ? parseInt(values.admissionYear) : 0,
+        graduation_year: values.graduationYear ? parseInt(values.graduationYear) : 0,
+        house: values.house || "Unknown",
         dormitory_name: values.dormitoryName || null,
         subjects_taken: values.subjectsTaken?.length ? values.subjectsTaken : null,
         sports_participated: values.sportsParticipated?.length ? values.sportsParticipated : null,
