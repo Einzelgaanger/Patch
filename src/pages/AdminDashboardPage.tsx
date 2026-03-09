@@ -444,7 +444,7 @@ export default function AdminDashboardPage() {
                             </TableRow>
                             {expandedId === r.id && (
                               <TableRow>
-                                <TableCell colSpan={7} className="bg-secondary/30 p-6">
+                                <TableCell colSpan={10} className="bg-secondary/30 p-6">
                                   <div className="grid md:grid-cols-2 gap-x-8 gap-y-1">
                                     <h4 className="col-span-2 font-display text-sm font-bold text-accent mt-2 mb-1 border-b border-border pb-1">Personal</h4>
                                     {renderDetail("Email", r.email)}
