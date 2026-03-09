@@ -696,12 +696,12 @@ export default function QuestionnairePage() {
                       </motion.div>
                     )}
 
-                    {/* Step 10: Submit */}
+                    {/* Step 10: Uploads & Extras */}
                     {currentStep === 10 && (
                       <motion.div key="step10" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
                         <CardHeader className="p-0 pb-4">
-                          <CardTitle className="font-display text-foreground">Almost There</CardTitle>
-                          <CardDescription>Upload files and finalize your submission.</CardDescription>
+                          <CardTitle className="font-display text-foreground">Uploads & Extras</CardTitle>
+                          <CardDescription>Upload files and add any final comments.</CardDescription>
                         </CardHeader>
                         <FormField control={form.control} name="additionalComments" render={({ field }) => (
                           <FormItem><FormLabel>Additional Comments</FormLabel><FormControl><Textarea className="rounded-xl min-h-[80px]" placeholder="Anything else you'd like to share that we haven't asked about..." {...field} /></FormControl><FormMessage /></FormItem>
@@ -742,16 +742,33 @@ export default function QuestionnairePage() {
                             <Checkbox checked={form.watch("willingToBeInterviewed")} onCheckedChange={(v) => form.setValue("willingToBeInterviewed", !!v)} />
                             <span>I'm willing to be interviewed for the book</span>
                           </label>
-                          <FormField control={form.control} name="consentToPublish" render={({ field }) => (
-                            <FormItem className="flex flex-row items-start gap-3 rounded-xl border border-border p-4">
-                              <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
-                              <div className="space-y-1 leading-none">
-                                <FormLabel>I agree to my story being published in the commemorative book. *</FormLabel>
-                                <FormMessage />
-                              </div>
-                            </FormItem>
-                          )} />
                         </div>
+                      </motion.div>
+                    )}
+
+                    {/* Step 11: Final Submit */}
+                    {currentStep === 11 && (
+                      <motion.div key="step11" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
+                        <CardHeader className="p-0 pb-4">
+                          <CardTitle className="font-display text-foreground text-center">Ready to Submit?</CardTitle>
+                          <CardDescription className="text-center">Review your responses and submit when you're ready. You can go back to any step to make changes.</CardDescription>
+                        </CardHeader>
+                        <div className="bg-secondary/50 rounded-xl p-4 sm:p-6 space-y-3 text-sm">
+                          <p className="font-medium text-foreground">Summary:</p>
+                          <p className="text-muted-foreground">• Name: {form.watch("fullName") || "Not provided"}</p>
+                          <p className="text-muted-foreground">• House: {form.watch("house") || "Not selected"}</p>
+                          <p className="text-muted-foreground">• Years: {form.watch("admissionYear") || "?"} – {form.watch("graduationYear") || "?"}</p>
+                          <p className="text-muted-foreground">• Files uploaded: {uploadedFiles.length}</p>
+                        </div>
+                        <FormField control={form.control} name="consentToPublish" render={({ field }) => (
+                          <FormItem className="flex flex-row items-start gap-3 rounded-xl border border-border p-4">
+                            <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                            <div className="space-y-1 leading-none">
+                              <FormLabel>I agree to my story being published in the commemorative book.</FormLabel>
+                              <FormMessage />
+                            </div>
+                          </FormItem>
+                        )} />
                       </motion.div>
                     )}
 
