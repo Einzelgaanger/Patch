@@ -530,7 +530,8 @@ export default function AdminDashboardPage() {
                               </TableRow>
                             )}
                           </React.Fragment>
-                        ))}
+                          );
+                        })}
                       </TableBody>
                     </Table>
                   </div>
