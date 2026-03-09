@@ -786,7 +786,7 @@ export default function QuestionnairePage() {
                         Next <ChevronRight className="ml-1 sm:ml-2 h-4 w-4" />
                       </Button>
                     ) : (
-                      <Button type="submit" variant="hero" className="rounded-xl text-xs sm:text-sm px-3 sm:px-4" disabled={submitting || uploading}>
+                      <Button type="button" variant="hero" className="rounded-xl text-xs sm:text-sm px-3 sm:px-4" disabled={submitting || uploading} onClick={() => form.handleSubmit(onSubmit)()}>
                         {uploading ? "Uploading..." : submitting ? "Submitting..." : <><Send className="mr-1 sm:mr-2 h-4 w-4" /> Submit</>}
                       </Button>
                     )}
