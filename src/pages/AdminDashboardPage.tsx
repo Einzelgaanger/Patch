@@ -76,6 +76,8 @@ export default function AdminDashboardPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [houseFilter, setHouseFilter] = useState("All");
+  const [yearFrom, setYearFrom] = useState("");
+  const [yearTo, setYearTo] = useState("");
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   // Chat state
