@@ -165,7 +165,9 @@ export default function QuestionnairePage() {
     },
   });
 
-  const nextStep = () => {
+  const nextStep = (e?: React.MouseEvent) => {
+    e?.preventDefault();
+    e?.stopPropagation();
     setCurrentStep((prev) => Math.min(prev + 1, steps.length));
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
