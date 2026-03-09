@@ -128,7 +128,8 @@ const steps = [
   { id: 7, title: "Memories", icon: BookOpen },
   { id: 8, title: "Achievements", icon: Award },
   { id: 9, title: "Alumni Profile", icon: User },
-  { id: 10, title: "Submit", icon: CheckCircle },
+  { id: 10, title: "Uploads", icon: Upload },
+  { id: 11, title: "Submit", icon: CheckCircle },
 ];
 
 export default function QuestionnairePage() {
