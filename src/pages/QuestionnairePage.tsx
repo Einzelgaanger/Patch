@@ -297,11 +297,11 @@ export default function QuestionnairePage() {
     <div className="min-h-screen bg-background relative overflow-hidden">
       {/* Header */}
       <div className="bg-primary border-b border-accent/20">
-        <div className="container mx-auto px-4 py-6 flex items-center gap-4">
-          <img src={impalaLogo} alt="Nairobi School" className="h-14 w-14 object-contain impala-emblem" />
+        <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 flex items-center gap-3 sm:gap-4">
+          <img src={impalaLogo} alt="Nairobi School" className="h-10 w-10 sm:h-14 sm:w-14 object-contain impala-emblem" />
           <div>
-            <h1 className="font-display text-xl font-bold text-primary-foreground">Nairobi School</h1>
-            <p className="text-accent text-sm font-medium tracking-wider">COMMEMORATIVE BOOK QUESTIONNAIRE</p>
+            <h1 className="font-display text-lg sm:text-xl font-bold text-primary-foreground">Nairobi School</h1>
+            <p className="text-accent text-xs sm:text-sm font-medium tracking-wider">COMMEMORATIVE BOOK QUESTIONNAIRE</p>
           </div>
         </div>
       </div>
