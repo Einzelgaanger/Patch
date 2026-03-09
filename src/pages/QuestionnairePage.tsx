@@ -756,17 +756,17 @@ export default function QuestionnairePage() {
 
                   </AnimatePresence>
 
-                  <div className="mt-8 flex items-center justify-between gap-4">
-                    <Button type="button" variant="outline" onClick={prevStep} disabled={currentStep === 1} className="rounded-xl">
-                      <ChevronLeft className="mr-2 h-4 w-4" /> Back
+                  <div className="mt-6 sm:mt-8 flex items-center justify-between gap-3">
+                    <Button type="button" variant="outline" onClick={prevStep} disabled={currentStep === 1} className="rounded-xl text-xs sm:text-sm px-3 sm:px-4">
+                      <ChevronLeft className="mr-1 sm:mr-2 h-4 w-4" /> Back
                     </Button>
                     {currentStep < steps.length ? (
-                      <Button type="button" variant="hero" onClick={nextStep} className="rounded-xl">
-                        Next <ChevronRight className="ml-2 h-4 w-4" />
+                      <Button type="button" variant="hero" onClick={nextStep} className="rounded-xl text-xs sm:text-sm px-3 sm:px-4">
+                        Next <ChevronRight className="ml-1 sm:ml-2 h-4 w-4" />
                       </Button>
                     ) : (
-                      <Button type="submit" variant="hero" className="rounded-xl" disabled={submitting || uploading}>
-                        {uploading ? "Uploading files..." : submitting ? "Submitting..." : <><Send className="mr-2 h-4 w-4" /> Submit Story</>}
+                      <Button type="submit" variant="hero" className="rounded-xl text-xs sm:text-sm px-3 sm:px-4" disabled={submitting || uploading}>
+                        {uploading ? "Uploading..." : submitting ? "Submitting..." : <><Send className="mr-1 sm:mr-2 h-4 w-4" /> Submit</>}
                       </Button>
                     )}
                   </div>
