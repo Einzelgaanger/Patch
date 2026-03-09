@@ -23,7 +23,6 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    // Fetch all questionnaire data for context
     const { data: responses, error: dbError } = await supabase
       .from("questionnaire_responses")
       .select("*")
@@ -46,11 +45,22 @@ serve(async (req) => {
       `Headmaster: ${r.headmaster_name || "N/A"} | Deputy: ${r.deputy_headmaster_name || "N/A"} | ` +
       `Housemaster: ${r.housemaster_name || "N/A"} | Class Teachers: ${r.class_teacher_names || "N/A"} | ` +
       `School Captain: ${r.school_captain_name || "N/A"} | House Captain: ${r.house_captain_name || "N/A"} | ` +
+      `Prefects Remembered: ${r.prefect_names_during_time || "N/A"} | ` +
       `Favorite Teachers: ${r.favorite_teachers || "N/A"} | ` +
       `Uniform: ${r.uniform_memories || "N/A"} | ` +
+      `Timetable: ${r.timetable_description || "N/A"} | ` +
       `Daily Routine: ${r.daily_routine_memories || "N/A"} | ` +
       `Dining: ${r.dining_memories || "N/A"} | Fav Meals: ${r.favorite_meals || "N/A"} | ` +
+      `Canteen: ${r.canteen_memories || "N/A"} | ` +
       `Dorm Life: ${r.dormitory_memories || "N/A"} | ` +
+      `Swimming Pool: ${r.swimming_pool_memories || "N/A"} | ` +
+      `Visiting Days: ${r.visiting_days_memories || "N/A"} | ` +
+      `Opening/Closing: ${r.opening_closing_day || "N/A"} | ` +
+      `Chapel: ${r.chapel_memories || "N/A"} | ` +
+      `Entertainment: ${r.entertainment_memories || "N/A"} | ` +
+      `Games/Hobbies: ${r.games_and_hobbies || "N/A"} | ` +
+      `House Colours: ${r.house_colours_description || "N/A"} | ` +
+      `Inter-House Competitions: ${r.inter_house_competitions || "N/A"} | ` +
       `Weekends: ${r.weekend_activities || "N/A"} | ` +
       `Punishments: ${r.punishments_memories || "N/A"} | ` +
       `Memorable Events: ${r.memorable_events || "N/A"} | ` +
@@ -64,6 +74,10 @@ serve(async (req) => {
       `Career: ${r.career_achievements || "N/A"} | ` +
       `Advice: ${r.advice_to_current || "N/A"} | ` +
       `Traditions: ${r.traditions_remembered || "N/A"} | ` +
+      `Notability: ${r.notability || "N/A"} | ` +
+      `Signature Contribution: ${r.signature_contribution || "N/A"} | ` +
+      `School Connection: ${r.school_connection || "N/A"} | ` +
+      `Legacy Note: ${r.legacy_note || "N/A"} | ` +
       `Comments: ${r.additional_comments || "N/A"} | ` +
       `Photos: ${r.has_photos_to_share ? "Yes" : "No"} | ` +
       `Interview: ${r.willing_to_be_interviewed ? "Yes" : "No"} | ` +
@@ -84,8 +98,15 @@ You can answer ANY question about this data:
 - Statistics and counts
 - Finding specific stories, achievements, traditions, dining memories, uniform descriptions
 - Cross-referencing data (e.g. "who played rugby AND was a prefect?")
-- School leader lookups (headmasters, housemasters, school captains by year)
-- Daily life comparisons across eras (food, routines, punishments, dress codes)
+- School leader lookups (headmasters, housemasters, school captains, prefects by year)
+- Daily life comparisons across eras (food, routines, punishments, dress codes, canteen items)
+- House colours and inter-house competition details
+- Canteen/tuck shop memories across different eras
+- Swimming pool/lido memories
+- Visiting day and opening/closing day stories
+- Chapel and religious life across eras
+- Entertainment and hobbies
+- Notable alumni profiles for the Roll of Honour
 - Generating summaries for book chapters
 - Finding patterns and insights
 
@@ -100,7 +121,6 @@ Be thorough, specific, and use actual names and details from the data. Format re
       messages.push({ role: "user", content: body.question });
     }
 
-    // Call Lovable AI Gateway with streaming
     const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -133,7 +153,6 @@ Be thorough, specific, and use actual names and details from the data. Format re
       throw new Error(`AI gateway error: ${aiResponse.status} - ${errText}`);
     }
 
-    // Stream the response back
     return new Response(aiResponse.body, {
       headers: { ...corsHeaders, "Content-Type": "text/event-stream" },
     });
