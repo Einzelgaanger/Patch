@@ -307,11 +307,11 @@ export default function QuestionnairePage() {
       </div>
 
       <div className="absolute top-0 left-0 w-full h-full bg-dots opacity-40 pointer-events-none" />
-      <div className="container mx-auto px-4 sm:px-6 relative z-10 py-8">
+      <div className="container mx-auto px-3 sm:px-6 relative z-10 py-4 sm:py-8">
         <motion.div initial="hidden" animate="show" variants={fadeIn("up", 0.2)} className="relative max-w-4xl mx-auto">
-          <div className="text-center mb-8">
-            <h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-2">Share Your Story</h2>
-            <p className="text-muted-foreground text-sm sm:text-base max-w-2xl mx-auto">
+          <div className="text-center mb-4 sm:mb-8">
+            <h2 className="font-display text-xl sm:text-2xl md:text-4xl font-bold text-foreground mb-1 sm:mb-2">Share Your Story</h2>
+            <p className="text-muted-foreground text-xs sm:text-base max-w-2xl mx-auto">
               Your memories are the bricks that build our legacy. Help us document the true spirit of the Patch.
             </p>
           </div>
