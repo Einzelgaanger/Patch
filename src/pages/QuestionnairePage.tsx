@@ -166,9 +166,13 @@ export default function QuestionnairePage() {
 
   const nextStep = () => {
     setCurrentStep((prev) => Math.min(prev + 1, steps.length));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const prevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 1));
+  const prevStep = () => {
+    setCurrentStep((prev) => Math.max(prev - 1, 1));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   async function onSubmit(values: FormValues) {
     setSubmitting(true);
