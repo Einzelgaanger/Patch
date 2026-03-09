@@ -302,12 +302,21 @@ export default function AdminDashboardPage() {
   const handleLogout = () => { localStorage.removeItem("admin_authenticated"); navigate("/admin"); };
 
   const filteredResponses = responses.filter((r) => {
-    const matchSearch = r.full_name.toLowerCase().includes(search.toLowerCase()) ||
-      (r.current_profession || "").toLowerCase().includes(search.toLowerCase()) ||
-      (r.email || "").toLowerCase().includes(search.toLowerCase());
+    const s = search.toLowerCase();
+    const matchSearch = !s || 
+      r.full_name.toLowerCase().includes(s) ||
+      (r.current_profession || "").toLowerCase().includes(s) ||
+      (r.email || "").toLowerCase().includes(s) ||
+      (r.school_nickname || "").toLowerCase().includes(s) ||
+      (r.admission_number || "").toLowerCase().includes(s) ||
+      (r.current_location || "").toLowerCase().includes(s) ||
+      (r.headmaster_name || "").toLowerCase().includes(s) ||
+      (r.dormitory_name || "").toLowerCase().includes(s) ||
+      String(r.admission_year).includes(s) ||
+      String(r.graduation_year).includes(s);
     const matchHouse = houseFilter === "All" || r.house === houseFilter;
     return matchSearch && matchHouse;
-  });
+  }).sort((a, b) => a.admission_year - b.admission_year);
 
   const exportCSV = () => {
     const headers = ["Name", "Email", "Phone", "Location", "Profession", "House", "Admission", "Graduation", "Prefect", "Sports Captain", "Club Leader", "Submitted"];
@@ -400,25 +409,42 @@ export default function AdminDashboardPage() {
                     <Table>
                       <TableHeader>
                         <TableRow>
-                          <TableHead></TableHead><TableHead>Name</TableHead><TableHead>House</TableHead>
-                          <TableHead>Years</TableHead><TableHead>Profession</TableHead><TableHead>Prefect</TableHead><TableHead>Submitted</TableHead>
+                          <TableHead className="w-8"></TableHead>
+                          <TableHead>Name</TableHead>
+                          <TableHead className="hidden sm:table-cell">Nickname</TableHead>
+                          <TableHead>House</TableHead>
+                          <TableHead>Years</TableHead>
+                          <TableHead className="hidden md:table-cell">Location</TableHead>
+                          <TableHead className="hidden lg:table-cell">Profession</TableHead>
+                          <TableHead className="hidden lg:table-cell">Roles</TableHead>
+                          <TableHead className="hidden xl:table-cell">Files</TableHead>
+                          <TableHead>Date</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {filteredResponses.map((r) => (
+                        {filteredResponses.map((r) => {
+                          const roles = [
+                            r.was_prefect ? `Prefect${r.prefect_position ? ` (${r.prefect_position})` : ""}` : "",
+                            r.was_sports_captain ? `Sports Capt.${r.sports_captain_details ? ` (${r.sports_captain_details})` : ""}` : "",
+                            r.was_club_leader ? `Club Leader${r.club_leader_details ? ` (${r.club_leader_details})` : ""}` : "",
+                          ].filter(Boolean).join(", ");
+                          return (
                           <React.Fragment key={r.id}>
                             <TableRow className="cursor-pointer hover:bg-secondary/50" onClick={() => setExpandedId(expandedId === r.id ? null : r.id)}>
                               <TableCell>{expandedId === r.id ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}</TableCell>
                               <TableCell className="font-medium">{r.full_name}</TableCell>
-                              <TableCell>{r.house}</TableCell>
-                              <TableCell>{r.admission_year} - {r.graduation_year}</TableCell>
-                              <TableCell>{r.current_profession || "—"}</TableCell>
-                              <TableCell>{r.was_prefect ? (r.prefect_position || "Yes") : "No"}</TableCell>
-                              <TableCell>{new Date(r.created_at).toLocaleDateString()}</TableCell>
+                              <TableCell className="hidden sm:table-cell text-muted-foreground">{r.school_nickname || "—"}</TableCell>
+                              <TableCell><span className="inline-block px-2 py-0.5 rounded-full text-xs font-medium bg-accent/10 text-accent">{r.house}</span></TableCell>
+                              <TableCell className="whitespace-nowrap">{r.admission_year || "?"} – {r.graduation_year || "?"}</TableCell>
+                              <TableCell className="hidden md:table-cell">{r.current_location || "—"}</TableCell>
+                              <TableCell className="hidden lg:table-cell">{r.current_profession || "—"}</TableCell>
+                              <TableCell className="hidden lg:table-cell text-xs max-w-[200px] truncate">{roles || "—"}</TableCell>
+                              <TableCell className="hidden xl:table-cell">{r.uploaded_files?.length || 0}</TableCell>
+                              <TableCell className="whitespace-nowrap text-xs">{new Date(r.created_at).toLocaleDateString()}</TableCell>
                             </TableRow>
                             {expandedId === r.id && (
                               <TableRow>
-                                <TableCell colSpan={7} className="bg-secondary/30 p-6">
+                                <TableCell colSpan={10} className="bg-secondary/30 p-6">
                                   <div className="grid md:grid-cols-2 gap-x-8 gap-y-1">
                                     <h4 className="col-span-2 font-display text-sm font-bold text-accent mt-2 mb-1 border-b border-border pb-1">Personal</h4>
                                     {renderDetail("Email", r.email)}
@@ -504,7 +530,8 @@ export default function AdminDashboardPage() {
                               </TableRow>
                             )}
                           </React.Fragment>
-                        ))}
+                          );
+                        })}
                       </TableBody>
                     </Table>
                   </div>
