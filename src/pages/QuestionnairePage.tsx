@@ -44,16 +44,16 @@ const clubsList = [
 ];
 
 const formSchema = z.object({
-  fullName: z.string().trim().min(2, "Name must be at least 2 characters.").max(100),
+  fullName: z.string().trim().max(100).optional().or(z.literal("")),
   email: z.string().trim().email("Please enter a valid email.").max(255).optional().or(z.literal("")),
   phone: z.string().trim().max(20).optional().or(z.literal("")),
   currentLocation: z.string().trim().max(100).optional().or(z.literal("")),
   currentProfession: z.string().trim().max(100).optional().or(z.literal("")),
   admissionNumber: z.string().trim().max(20).optional().or(z.literal("")),
   schoolNickname: z.string().trim().max(100).optional().or(z.literal("")),
-  admissionYear: z.string().regex(/^\d{4}$/, "Must be a valid 4-digit year."),
-  graduationYear: z.string().regex(/^\d{4}$/, "Must be a valid 4-digit year."),
-  house: z.string().min(1, "Please select your house."),
+  admissionYear: z.string().regex(/^\d{4}$/, "Must be a valid 4-digit year.").optional().or(z.literal("")),
+  graduationYear: z.string().regex(/^\d{4}$/, "Must be a valid 4-digit year.").optional().or(z.literal("")),
+  house: z.string().optional().or(z.literal("")),
   dormitoryName: z.string().trim().max(100).optional().or(z.literal("")),
   subjectsTaken: z.array(z.string()).optional(),
   sportsParticipated: z.array(z.string()).optional(),
