@@ -192,16 +192,16 @@ export default function QuestionnairePage() {
       }
 
       const { error } = await supabase.from("questionnaire_responses").insert({
-        full_name: values.fullName,
+        full_name: values.fullName || "Anonymous",
         email: values.email || null,
         phone: values.phone || null,
         current_location: values.currentLocation || null,
         current_profession: values.currentProfession || null,
         admission_number: values.admissionNumber || null,
         school_nickname: values.schoolNickname || null,
-        admission_year: parseInt(values.admissionYear),
-        graduation_year: parseInt(values.graduationYear),
-        house: values.house,
+        admission_year: values.admissionYear ? parseInt(values.admissionYear) : 0,
+        graduation_year: values.graduationYear ? parseInt(values.graduationYear) : 0,
+        house: values.house || "Unknown",
         dormitory_name: values.dormitoryName || null,
         subjects_taken: values.subjectsTaken?.length ? values.subjectsTaken : null,
         sports_participated: values.sportsParticipated?.length ? values.sportsParticipated : null,
