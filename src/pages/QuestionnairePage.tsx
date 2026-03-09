@@ -316,20 +316,29 @@ export default function QuestionnairePage() {
             </p>
           </div>
 
-          {/* Progress Steps */}
-          <div className="flex justify-between items-center mb-8 relative px-0 sm:px-2">
-            <div className="absolute left-0 top-1/2 w-full h-1 bg-primary/10 -z-10" />
-            <div className="absolute left-0 top-1/2 h-1 bg-accent -z-10 transition-all duration-500" style={{ width: `${((currentStep - 1) / (steps.length - 1)) * 100}%` }} />
-            {steps.map((step) => (
-              <div key={step.id} className="flex flex-col items-center gap-1">
-                <div className={`w-7 h-7 md:w-9 md:h-9 rounded-full flex items-center justify-center transition-all duration-300 border-3 ${
-                  currentStep >= step.id ? "bg-accent border-accent text-primary shadow-lg scale-110" : "bg-card border-primary/10 text-muted-foreground"
-                }`}>
-                  <step.icon className="w-3 h-3 md:w-4 md:h-4" />
-                </div>
-                <span className="text-[7px] md:text-[10px] font-medium text-muted-foreground hidden sm:block">{step.title}</span>
-              </div>
-            ))}
+          {/* Progress Steps - scrollable on mobile */}
+          <div className="mb-6 sm:mb-8">
+            <div className="flex sm:hidden items-center justify-between mb-2 px-1">
+              <span className="text-xs font-medium text-muted-foreground">Step {currentStep} of {steps.length}</span>
+              <span className="text-xs font-semibold text-accent">{steps[currentStep - 1].title}</span>
+            </div>
+            <div className="w-full h-2 bg-primary/10 rounded-full sm:hidden mb-4">
+              <div className="h-full bg-accent rounded-full transition-all duration-500" style={{ width: `${(currentStep / steps.length) * 100}%` }} />
+            </div>
+            <div className="hidden sm:flex justify-between items-center relative px-0 sm:px-2">
+              <div className="absolute left-0 top-1/2 w-full h-1 bg-primary/10 -z-10" />
+              <div className="absolute left-0 top-1/2 h-1 bg-accent -z-10 transition-all duration-500" style={{ width: `${((currentStep - 1) / (steps.length - 1)) * 100}%` }} />
+              {steps.map((step) => (
+                <button type="button" key={step.id} onClick={() => { setCurrentStep(step.id); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="flex flex-col items-center gap-1 cursor-pointer">
+                  <div className={`w-7 h-7 md:w-9 md:h-9 rounded-full flex items-center justify-center transition-all duration-300 border-3 ${
+                    currentStep >= step.id ? "bg-accent border-accent text-primary shadow-lg scale-110" : "bg-card border-primary/10 text-muted-foreground"
+                  }`}>
+                    <step.icon className="w-3 h-3 md:w-4 md:h-4" />
+                  </div>
+                  <span className="text-[7px] md:text-[10px] font-medium text-muted-foreground">{step.title}</span>
+                </button>
+              ))}
+            </div>
           </div>
 
           <Form {...form}>
