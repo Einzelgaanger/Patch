@@ -344,7 +344,7 @@ export default function QuestionnairePage() {
           </div>
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form onSubmit={form.handleSubmit(onSubmit)} onKeyDown={(e) => { if (e.key === "Enter" && currentStep !== steps.length) e.preventDefault(); }} className="space-y-6">
               <Card className="card-elevated border-0 overflow-hidden">
                 <CardContent className="p-3 sm:p-6 md:p-8">
                   <AnimatePresence mode="wait">
