@@ -178,7 +178,6 @@ export default function QuestionnairePage() {
   };
 
   async function onSubmit(values: FormValues) {
-    if (currentStep !== steps.length) return; // Only submit on the final step
     setSubmitting(true);
     try {
       let filePaths: string[] = [];
