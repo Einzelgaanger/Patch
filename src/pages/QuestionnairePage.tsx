@@ -166,9 +166,13 @@ export default function QuestionnairePage() {
 
   const nextStep = () => {
     setCurrentStep((prev) => Math.min(prev + 1, steps.length));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const prevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 1));
+  const prevStep = () => {
+    setCurrentStep((prev) => Math.max(prev - 1, 1));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   async function onSubmit(values: FormValues) {
     setSubmitting(true);
@@ -293,45 +297,54 @@ export default function QuestionnairePage() {
     <div className="min-h-screen bg-background relative overflow-hidden">
       {/* Header */}
       <div className="bg-primary border-b border-accent/20">
-        <div className="container mx-auto px-4 py-6 flex items-center gap-4">
-          <img src={impalaLogo} alt="Nairobi School" className="h-14 w-14 object-contain impala-emblem" />
+        <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 flex items-center gap-3 sm:gap-4">
+          <img src={impalaLogo} alt="Nairobi School" className="h-10 w-10 sm:h-14 sm:w-14 object-contain impala-emblem" />
           <div>
-            <h1 className="font-display text-xl font-bold text-primary-foreground">Nairobi School</h1>
-            <p className="text-accent text-sm font-medium tracking-wider">COMMEMORATIVE BOOK QUESTIONNAIRE</p>
+            <h1 className="font-display text-lg sm:text-xl font-bold text-primary-foreground">Nairobi School</h1>
+            <p className="text-accent text-xs sm:text-sm font-medium tracking-wider">COMMEMORATIVE BOOK QUESTIONNAIRE</p>
           </div>
         </div>
       </div>
 
       <div className="absolute top-0 left-0 w-full h-full bg-dots opacity-40 pointer-events-none" />
-      <div className="container mx-auto px-4 sm:px-6 relative z-10 py-8">
+      <div className="container mx-auto px-3 sm:px-6 relative z-10 py-4 sm:py-8">
         <motion.div initial="hidden" animate="show" variants={fadeIn("up", 0.2)} className="relative max-w-4xl mx-auto">
-          <div className="text-center mb-8">
-            <h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-2">Share Your Story</h2>
-            <p className="text-muted-foreground text-sm sm:text-base max-w-2xl mx-auto">
+          <div className="text-center mb-4 sm:mb-8">
+            <h2 className="font-display text-xl sm:text-2xl md:text-4xl font-bold text-foreground mb-1 sm:mb-2">Share Your Story</h2>
+            <p className="text-muted-foreground text-xs sm:text-base max-w-2xl mx-auto">
               Your memories are the bricks that build our legacy. Help us document the true spirit of the Patch.
             </p>
           </div>
 
-          {/* Progress Steps */}
-          <div className="flex justify-between items-center mb-8 relative px-0 sm:px-2">
-            <div className="absolute left-0 top-1/2 w-full h-1 bg-primary/10 -z-10" />
-            <div className="absolute left-0 top-1/2 h-1 bg-accent -z-10 transition-all duration-500" style={{ width: `${((currentStep - 1) / (steps.length - 1)) * 100}%` }} />
-            {steps.map((step) => (
-              <div key={step.id} className="flex flex-col items-center gap-1">
-                <div className={`w-7 h-7 md:w-9 md:h-9 rounded-full flex items-center justify-center transition-all duration-300 border-3 ${
-                  currentStep >= step.id ? "bg-accent border-accent text-primary shadow-lg scale-110" : "bg-card border-primary/10 text-muted-foreground"
-                }`}>
-                  <step.icon className="w-3 h-3 md:w-4 md:h-4" />
-                </div>
-                <span className="text-[7px] md:text-[10px] font-medium text-muted-foreground hidden sm:block">{step.title}</span>
-              </div>
-            ))}
+          {/* Progress Steps - scrollable on mobile */}
+          <div className="mb-6 sm:mb-8">
+            <div className="flex sm:hidden items-center justify-between mb-2 px-1">
+              <span className="text-xs font-medium text-muted-foreground">Step {currentStep} of {steps.length}</span>
+              <span className="text-xs font-semibold text-accent">{steps[currentStep - 1].title}</span>
+            </div>
+            <div className="w-full h-2 bg-primary/10 rounded-full sm:hidden mb-4">
+              <div className="h-full bg-accent rounded-full transition-all duration-500" style={{ width: `${(currentStep / steps.length) * 100}%` }} />
+            </div>
+            <div className="hidden sm:flex justify-between items-center relative px-0 sm:px-2">
+              <div className="absolute left-0 top-1/2 w-full h-1 bg-primary/10 -z-10" />
+              <div className="absolute left-0 top-1/2 h-1 bg-accent -z-10 transition-all duration-500" style={{ width: `${((currentStep - 1) / (steps.length - 1)) * 100}%` }} />
+              {steps.map((step) => (
+                <button type="button" key={step.id} onClick={() => { setCurrentStep(step.id); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="flex flex-col items-center gap-1 cursor-pointer">
+                  <div className={`w-7 h-7 md:w-9 md:h-9 rounded-full flex items-center justify-center transition-all duration-300 border-3 ${
+                    currentStep >= step.id ? "bg-accent border-accent text-primary shadow-lg scale-110" : "bg-card border-primary/10 text-muted-foreground"
+                  }`}>
+                    <step.icon className="w-3 h-3 md:w-4 md:h-4" />
+                  </div>
+                  <span className="text-[7px] md:text-[10px] font-medium text-muted-foreground">{step.title}</span>
+                </button>
+              ))}
+            </div>
           </div>
 
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <Card className="card-elevated border-0 overflow-hidden">
-                <CardContent className="p-4 sm:p-6 md:p-8">
+                <CardContent className="p-3 sm:p-6 md:p-8">
                   <AnimatePresence mode="wait">
 
                     {/* Step 1: Personal Info */}
@@ -743,17 +756,17 @@ export default function QuestionnairePage() {
 
                   </AnimatePresence>
 
-                  <div className="mt-8 flex items-center justify-between gap-4">
-                    <Button type="button" variant="outline" onClick={prevStep} disabled={currentStep === 1} className="rounded-xl">
-                      <ChevronLeft className="mr-2 h-4 w-4" /> Back
+                  <div className="mt-6 sm:mt-8 flex items-center justify-between gap-3">
+                    <Button type="button" variant="outline" onClick={prevStep} disabled={currentStep === 1} className="rounded-xl text-xs sm:text-sm px-3 sm:px-4">
+                      <ChevronLeft className="mr-1 sm:mr-2 h-4 w-4" /> Back
                     </Button>
                     {currentStep < steps.length ? (
-                      <Button type="button" variant="hero" onClick={nextStep} className="rounded-xl">
-                        Next <ChevronRight className="ml-2 h-4 w-4" />
+                      <Button type="button" variant="hero" onClick={nextStep} className="rounded-xl text-xs sm:text-sm px-3 sm:px-4">
+                        Next <ChevronRight className="ml-1 sm:ml-2 h-4 w-4" />
                       </Button>
                     ) : (
-                      <Button type="submit" variant="hero" className="rounded-xl" disabled={submitting || uploading}>
-                        {uploading ? "Uploading files..." : submitting ? "Submitting..." : <><Send className="mr-2 h-4 w-4" /> Submit Story</>}
+                      <Button type="submit" variant="hero" className="rounded-xl text-xs sm:text-sm px-3 sm:px-4" disabled={submitting || uploading}>
+                        {uploading ? "Uploading..." : submitting ? "Submitting..." : <><Send className="mr-1 sm:mr-2 h-4 w-4" /> Submit</>}
                       </Button>
                     )}
                   </div>
