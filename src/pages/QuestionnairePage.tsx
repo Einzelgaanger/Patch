@@ -113,7 +113,7 @@ const formSchema = z.object({
   hasPhotosToShare: z.boolean().default(false),
   willingToBeInterviewed: z.boolean().default(false),
   additionalComments: z.string().trim().max(2000).optional().or(z.literal("")),
-  consentToPublish: z.boolean().refine((val) => val === true, "You must agree to the terms to submit."),
+  consentToPublish: z.boolean().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
