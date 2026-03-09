@@ -164,14 +164,8 @@ export default function QuestionnairePage() {
     },
   });
 
-  const nextStep = async () => {
-    let fields: (keyof FormValues)[] = [];
-    if (currentStep === 1) fields = ["fullName", "email", "phone", "currentLocation", "currentProfession"];
-    else if (currentStep === 2) fields = ["admissionYear", "graduationYear", "house"];
-    else if (currentStep === 3) fields = ["wasPrefect", "wasSportsCaptain", "wasClubLeader"];
-
-    const isValid = await form.trigger(fields);
-    if (isValid) setCurrentStep((prev) => Math.min(prev + 1, steps.length));
+  const nextStep = () => {
+    setCurrentStep((prev) => Math.min(prev + 1, steps.length));
   };
 
   const prevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 1));
