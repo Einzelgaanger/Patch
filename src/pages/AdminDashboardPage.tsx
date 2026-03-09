@@ -23,15 +23,34 @@ const ADMIN_KEY = "NairobiSchool2026!";
 interface FullResponse {
   id: string; full_name: string; email: string | null; phone: string | null;
   current_location: string | null; current_profession: string | null;
-  admission_number: string | null; house: string; admission_year: number;
-  graduation_year: number; subjects_taken: string[] | null;
-  sports_participated: string[] | null; was_prefect: boolean | null;
-  prefect_position: string | null; was_sports_captain: boolean | null;
-  sports_captain_details: string | null; was_club_leader: boolean | null;
-  club_leader_details: string | null; academic_achievements: string | null;
-  sports_achievements: string | null; career_achievements: string | null;
+  admission_number: string | null; school_nickname: string | null;
+  house: string; admission_year: number; graduation_year: number;
+  dormitory_name: string | null; subjects_taken: string[] | null;
+  sports_participated: string[] | null; clubs_societies: string[] | null;
+  was_prefect: boolean | null; prefect_position: string | null;
+  was_sports_captain: boolean | null; sports_captain_details: string | null;
+  was_club_leader: boolean | null; club_leader_details: string | null;
+  headmaster_name: string | null; deputy_headmaster_name: string | null;
+  housemaster_name: string | null; class_teacher_names: string | null;
+  school_captain_name: string | null; house_captain_name: string | null;
+  prefect_names_during_time: string | null;
+  uniform_memories: string | null; daily_routine_memories: string | null;
+  timetable_description: string | null; dining_memories: string | null;
+  favorite_meals: string | null; canteen_memories: string | null;
+  dormitory_memories: string | null; swimming_pool_memories: string | null;
+  weekend_activities: string | null; punishments_memories: string | null;
+  visiting_days_memories: string | null; opening_closing_day: string | null;
+  chapel_memories: string | null; entertainment_memories: string | null;
+  games_and_hobbies: string | null;
+  house_colours_description: string | null; inter_house_competitions: string | null;
   favorite_teachers: string | null; memorable_events: string | null;
   funny_stories: string | null; traditions_remembered: string | null;
+  rivalry_memories: string | null; cultural_events: string | null;
+  religious_life: string | null; significant_changes: string | null;
+  academic_achievements: string | null; sports_achievements: string | null;
+  career_achievements: string | null; advice_to_current: string | null;
+  notability: string | null; signature_contribution: string | null;
+  school_connection: string | null; legacy_note: string | null;
   has_photos_to_share: boolean | null; willing_to_be_interviewed: boolean | null;
   additional_comments: string | null; uploaded_files: string[] | null;
   created_at: string;
@@ -401,43 +420,73 @@ export default function AdminDashboardPage() {
                               <TableRow>
                                 <TableCell colSpan={7} className="bg-secondary/30 p-6">
                                   <div className="grid md:grid-cols-2 gap-x-8 gap-y-1">
+                                    <h4 className="col-span-2 font-display text-sm font-bold text-accent mt-2 mb-1 border-b border-border pb-1">Personal</h4>
                                     {renderDetail("Email", r.email)}
                                     {renderDetail("Phone", r.phone)}
                                     {renderDetail("Location", r.current_location)}
                                     {renderDetail("Admission #", r.admission_number)}
-                                    {renderDetail("Nickname", (r as any).school_nickname)}
-                                    {renderDetail("Dormitory", (r as any).dormitory_name)}
+                                    {renderDetail("Nickname", r.school_nickname)}
+                                    {renderDetail("Dormitory", r.dormitory_name)}
+
+                                    <h4 className="col-span-2 font-display text-sm font-bold text-accent mt-3 mb-1 border-b border-border pb-1">Academics & Activities</h4>
                                     {renderDetail("Subjects", r.subjects_taken?.join(", "))}
-                                    {renderDetail("Clubs & Societies", (r as any).clubs_societies?.join(", "))}
+                                    {renderDetail("Clubs & Societies", r.clubs_societies?.join(", "))}
                                     {renderDetail("Sports", r.sports_participated?.join(", "))}
+                                    {renderDetail("Prefect Position", r.was_prefect ? (r.prefect_position || "Yes") : null)}
                                     {renderDetail("Sports Captain", r.was_sports_captain ? (r.sports_captain_details || "Yes") : null)}
                                     {renderDetail("Club Leader", r.was_club_leader ? (r.club_leader_details || "Yes") : null)}
-                                    {renderDetail("Headmaster", (r as any).headmaster_name)}
-                                    {renderDetail("Deputy Headmaster", (r as any).deputy_headmaster_name)}
-                                    {renderDetail("Housemaster", (r as any).housemaster_name)}
-                                    {renderDetail("Class Teachers", (r as any).class_teacher_names)}
-                                    {renderDetail("School Captain", (r as any).school_captain_name)}
-                                    {renderDetail("House Captain", (r as any).house_captain_name)}
+
+                                    <h4 className="col-span-2 font-display text-sm font-bold text-accent mt-3 mb-1 border-b border-border pb-1">School Leaders</h4>
+                                    {renderDetail("Headmaster", r.headmaster_name)}
+                                    {renderDetail("Deputy Headmaster", r.deputy_headmaster_name)}
+                                    {renderDetail("Housemaster", r.housemaster_name)}
+                                    {renderDetail("Class Teachers", r.class_teacher_names)}
+                                    {renderDetail("School Captain", r.school_captain_name)}
+                                    {renderDetail("House Captain", r.house_captain_name)}
+                                    {renderDetail("Prefects Remembered", r.prefect_names_during_time)}
                                     {renderDetail("Favourite Teachers", r.favorite_teachers)}
-                                    {renderDetail("Uniform Memories", (r as any).uniform_memories)}
-                                    {renderDetail("Daily Routine", (r as any).daily_routine_memories)}
-                                    {renderDetail("Dining Memories", (r as any).dining_memories)}
-                                    {renderDetail("Favourite Meals", (r as any).favorite_meals)}
-                                    {renderDetail("Dormitory Life", (r as any).dormitory_memories)}
-                                    {renderDetail("Weekend Activities", (r as any).weekend_activities)}
-                                    {renderDetail("Punishments", (r as any).punishments_memories)}
+
+                                    <h4 className="col-span-2 font-display text-sm font-bold text-accent mt-3 mb-1 border-b border-border pb-1">Daily Life</h4>
+                                    {renderDetail("Uniform Memories", r.uniform_memories)}
+                                    {renderDetail("Timetable", r.timetable_description)}
+                                    {renderDetail("Daily Routine", r.daily_routine_memories)}
+                                    {renderDetail("Dining Memories", r.dining_memories)}
+                                    {renderDetail("Favourite Meals", r.favorite_meals)}
+                                    {renderDetail("Canteen / Tuck Shop", r.canteen_memories)}
+                                    {renderDetail("Dormitory Life", r.dormitory_memories)}
+                                    {renderDetail("Swimming Pool", r.swimming_pool_memories)}
+                                    {renderDetail("Visiting Days", r.visiting_days_memories)}
+                                    {renderDetail("Opening/Closing Day", r.opening_closing_day)}
+                                    {renderDetail("Weekend Activities", r.weekend_activities)}
+                                    {renderDetail("Punishments", r.punishments_memories)}
+
+                                    <h4 className="col-span-2 font-display text-sm font-bold text-accent mt-3 mb-1 border-b border-border pb-1">House Life & Culture</h4>
+                                    {renderDetail("House Colours & Identity", r.house_colours_description)}
+                                    {renderDetail("Inter-House Competitions", r.inter_house_competitions)}
+                                    {renderDetail("Chapel & Services", r.chapel_memories)}
+                                    {renderDetail("Entertainment", r.entertainment_memories)}
+                                    {renderDetail("Games & Hobbies", r.games_and_hobbies)}
+
+                                    <h4 className="col-span-2 font-display text-sm font-bold text-accent mt-3 mb-1 border-b border-border pb-1">Memories</h4>
                                     {renderDetail("Memorable Events", r.memorable_events)}
                                     {renderDetail("Funny Stories", r.funny_stories)}
-                                    {renderDetail("Rivalries", (r as any).rivalry_memories)}
-                                    {renderDetail("Cultural Events", (r as any).cultural_events)}
-                                    {renderDetail("Religious Life", (r as any).religious_life)}
-                                    {renderDetail("Significant Changes", (r as any).significant_changes)}
+                                    {renderDetail("Rivalries", r.rivalry_memories)}
+                                    {renderDetail("Cultural Events", r.cultural_events)}
+                                    {renderDetail("Religious Life", r.religious_life)}
+                                    {renderDetail("Significant Changes", r.significant_changes)}
                                     {renderDetail("Traditions", r.traditions_remembered)}
+
+                                    <h4 className="col-span-2 font-display text-sm font-bold text-accent mt-3 mb-1 border-b border-border pb-1">Achievements & Alumni</h4>
                                     {renderDetail("Academic Achievements", r.academic_achievements)}
                                     {renderDetail("Sports Achievements", r.sports_achievements)}
                                     {renderDetail("Career Achievements", r.career_achievements)}
-                                    {renderDetail("Advice to Current Students", (r as any).advice_to_current)}
+                                    {renderDetail("Advice to Current Students", r.advice_to_current)}
+                                    {renderDetail("Notability", r.notability)}
+                                    {renderDetail("Signature Contribution", r.signature_contribution)}
+                                    {renderDetail("School Connection", r.school_connection)}
+                                    {renderDetail("Legacy Note", r.legacy_note)}
                                     {renderDetail("Additional Comments", r.additional_comments)}
+
                                     {r.has_photos_to_share && <div className="text-sm text-accent font-bold">📷 Has photos to share</div>}
                                     {r.willing_to_be_interviewed && <div className="text-sm text-accent font-bold">🎙️ Willing to be interviewed</div>}
                                     {r.uploaded_files && r.uploaded_files.length > 0 && (
