@@ -74,7 +74,9 @@ export type Database = {
           admission_number: string | null
           admission_year: number
           advice_to_current: string | null
+          canteen_memories: string | null
           career_achievements: string | null
+          chapel_memories: string | null
           class_teacher_names: string | null
           club_leader_details: string | null
           clubs_societies: string[] | null
@@ -88,34 +90,47 @@ export type Database = {
           dormitory_memories: string | null
           dormitory_name: string | null
           email: string | null
+          entertainment_memories: string | null
           favorite_meals: string | null
           favorite_teachers: string | null
           full_name: string
           funny_stories: string | null
+          games_and_hobbies: string | null
           graduation_year: number
           has_photos_to_share: boolean | null
           headmaster_name: string | null
           house: string
           house_captain_name: string | null
+          house_colours_description: string | null
           housemaster_name: string | null
           id: string
+          inter_house_competitions: string | null
+          legacy_note: string | null
           memorable_events: string | null
+          notability: string | null
+          opening_closing_day: string | null
           phone: string | null
+          prefect_names_during_time: string | null
           prefect_position: string | null
           punishments_memories: string | null
           religious_life: string | null
           rivalry_memories: string | null
           school_captain_name: string | null
+          school_connection: string | null
           school_nickname: string | null
+          signature_contribution: string | null
           significant_changes: string | null
           sports_achievements: string | null
           sports_captain_details: string | null
           sports_participated: string[] | null
           subjects_taken: string[] | null
+          swimming_pool_memories: string | null
+          timetable_description: string | null
           traditions_remembered: string | null
           uniform_memories: string | null
           updated_at: string
           uploaded_files: string[] | null
+          visiting_days_memories: string | null
           was_club_leader: boolean | null
           was_prefect: boolean | null
           was_sports_captain: boolean | null
@@ -128,7 +143,9 @@ export type Database = {
           admission_number?: string | null
           admission_year: number
           advice_to_current?: string | null
+          canteen_memories?: string | null
           career_achievements?: string | null
+          chapel_memories?: string | null
           class_teacher_names?: string | null
           club_leader_details?: string | null
           clubs_societies?: string[] | null
@@ -142,34 +159,47 @@ export type Database = {
           dormitory_memories?: string | null
           dormitory_name?: string | null
           email?: string | null
+          entertainment_memories?: string | null
           favorite_meals?: string | null
           favorite_teachers?: string | null
           full_name: string
           funny_stories?: string | null
+          games_and_hobbies?: string | null
           graduation_year: number
           has_photos_to_share?: boolean | null
           headmaster_name?: string | null
           house: string
           house_captain_name?: string | null
+          house_colours_description?: string | null
           housemaster_name?: string | null
           id?: string
+          inter_house_competitions?: string | null
+          legacy_note?: string | null
           memorable_events?: string | null
+          notability?: string | null
+          opening_closing_day?: string | null
           phone?: string | null
+          prefect_names_during_time?: string | null
           prefect_position?: string | null
           punishments_memories?: string | null
           religious_life?: string | null
           rivalry_memories?: string | null
           school_captain_name?: string | null
+          school_connection?: string | null
           school_nickname?: string | null
+          signature_contribution?: string | null
           significant_changes?: string | null
           sports_achievements?: string | null
           sports_captain_details?: string | null
           sports_participated?: string[] | null
           subjects_taken?: string[] | null
+          swimming_pool_memories?: string | null
+          timetable_description?: string | null
           traditions_remembered?: string | null
           uniform_memories?: string | null
           updated_at?: string
           uploaded_files?: string[] | null
+          visiting_days_memories?: string | null
           was_club_leader?: boolean | null
           was_prefect?: boolean | null
           was_sports_captain?: boolean | null
@@ -182,7 +212,9 @@ export type Database = {
           admission_number?: string | null
           admission_year?: number
           advice_to_current?: string | null
+          canteen_memories?: string | null
           career_achievements?: string | null
+          chapel_memories?: string | null
           class_teacher_names?: string | null
           club_leader_details?: string | null
           clubs_societies?: string[] | null
@@ -196,34 +228,47 @@ export type Database = {
           dormitory_memories?: string | null
           dormitory_name?: string | null
           email?: string | null
+          entertainment_memories?: string | null
           favorite_meals?: string | null
           favorite_teachers?: string | null
           full_name?: string
           funny_stories?: string | null
+          games_and_hobbies?: string | null
           graduation_year?: number
           has_photos_to_share?: boolean | null
           headmaster_name?: string | null
           house?: string
           house_captain_name?: string | null
+          house_colours_description?: string | null
           housemaster_name?: string | null
           id?: string
+          inter_house_competitions?: string | null
+          legacy_note?: string | null
           memorable_events?: string | null
+          notability?: string | null
+          opening_closing_day?: string | null
           phone?: string | null
+          prefect_names_during_time?: string | null
           prefect_position?: string | null
           punishments_memories?: string | null
           religious_life?: string | null
           rivalry_memories?: string | null
           school_captain_name?: string | null
+          school_connection?: string | null
           school_nickname?: string | null
+          signature_contribution?: string | null
           significant_changes?: string | null
           sports_achievements?: string | null
           sports_captain_details?: string | null
           sports_participated?: string[] | null
           subjects_taken?: string[] | null
+          swimming_pool_memories?: string | null
+          timetable_description?: string | null
           traditions_remembered?: string | null
           uniform_memories?: string | null
           updated_at?: string
           uploaded_files?: string[] | null
+          visiting_days_memories?: string | null
           was_club_leader?: boolean | null
           was_prefect?: boolean | null
           was_sports_captain?: boolean | null
