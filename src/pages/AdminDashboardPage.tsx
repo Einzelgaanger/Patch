@@ -302,12 +302,21 @@ export default function AdminDashboardPage() {
   const handleLogout = () => { localStorage.removeItem("admin_authenticated"); navigate("/admin"); };
 
   const filteredResponses = responses.filter((r) => {
-    const matchSearch = r.full_name.toLowerCase().includes(search.toLowerCase()) ||
-      (r.current_profession || "").toLowerCase().includes(search.toLowerCase()) ||
-      (r.email || "").toLowerCase().includes(search.toLowerCase());
+    const s = search.toLowerCase();
+    const matchSearch = !s || 
+      r.full_name.toLowerCase().includes(s) ||
+      (r.current_profession || "").toLowerCase().includes(s) ||
+      (r.email || "").toLowerCase().includes(s) ||
+      (r.school_nickname || "").toLowerCase().includes(s) ||
+      (r.admission_number || "").toLowerCase().includes(s) ||
+      (r.current_location || "").toLowerCase().includes(s) ||
+      (r.headmaster_name || "").toLowerCase().includes(s) ||
+      (r.dormitory_name || "").toLowerCase().includes(s) ||
+      String(r.admission_year).includes(s) ||
+      String(r.graduation_year).includes(s);
     const matchHouse = houseFilter === "All" || r.house === houseFilter;
     return matchSearch && matchHouse;
-  });
+  }).sort((a, b) => a.admission_year - b.admission_year);
 
   const exportCSV = () => {
     const headers = ["Name", "Email", "Phone", "Location", "Profession", "House", "Admission", "Graduation", "Prefect", "Sports Captain", "Club Leader", "Submitted"];
