@@ -76,6 +76,8 @@ export default function AdminDashboardPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [houseFilter, setHouseFilter] = useState("All");
+  const [yearFrom, setYearFrom] = useState("");
+  const [yearTo, setYearTo] = useState("");
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   // Chat state
@@ -312,10 +314,16 @@ export default function AdminDashboardPage() {
       (r.current_location || "").toLowerCase().includes(s) ||
       (r.headmaster_name || "").toLowerCase().includes(s) ||
       (r.dormitory_name || "").toLowerCase().includes(s) ||
+      (r.prefect_names_during_time || "").toLowerCase().includes(s) ||
+      (r.favorite_teachers || "").toLowerCase().includes(s) ||
+      (r.notability || "").toLowerCase().includes(s) ||
       String(r.admission_year).includes(s) ||
       String(r.graduation_year).includes(s);
     const matchHouse = houseFilter === "All" || r.house === houseFilter;
-    return matchSearch && matchHouse;
+    const fromYear = yearFrom ? parseInt(yearFrom) : 0;
+    const toYear = yearTo ? parseInt(yearTo) : 9999;
+    const matchYear = r.admission_year >= fromYear && r.graduation_year <= toYear;
+    return matchSearch && matchHouse && matchYear;
   }).sort((a, b) => a.admission_year - b.admission_year);
 
   const exportCSV = () => {
@@ -390,12 +398,17 @@ export default function AdminDashboardPage() {
                 <div className="flex flex-wrap gap-2 items-center w-full md:w-auto">
                   <div className="relative flex-1 min-w-[180px] md:min-w-0 md:flex-initial">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9 w-full md:w-64" />
+                    <Input placeholder="Search name, teacher, prefect..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9 w-full md:w-64" />
                   </div>
                   <Select value={houseFilter} onValueChange={setHouseFilter}>
                     <SelectTrigger className="w-full sm:w-40"><Filter className="h-4 w-4 mr-2 shrink-0" /><SelectValue /></SelectTrigger>
                     <SelectContent>{houses.map((h) => (<SelectItem key={h} value={h}>{h}</SelectItem>))}</SelectContent>
                   </Select>
+                  <div className="flex items-center gap-1">
+                    <Input type="number" placeholder="From" value={yearFrom} onChange={(e) => setYearFrom(e.target.value)} className="w-20 text-xs h-9" />
+                    <span className="text-muted-foreground text-xs">–</span>
+                    <Input type="number" placeholder="To" value={yearTo} onChange={(e) => setYearTo(e.target.value)} className="w-20 text-xs h-9" />
+                  </div>
                   <Button variant="outline" size="sm" onClick={exportCSV} className="gap-1"><Download className="h-4 w-4" /> Export</Button>
                 </div>
               </CardHeader>

@@ -165,7 +165,9 @@ export default function QuestionnairePage() {
     },
   });
 
-  const nextStep = () => {
+  const nextStep = (e?: React.MouseEvent) => {
+    e?.preventDefault();
+    e?.stopPropagation();
     setCurrentStep((prev) => Math.min(prev + 1, steps.length));
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -343,7 +345,7 @@ export default function QuestionnairePage() {
           </div>
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form onSubmit={(e) => e.preventDefault()} className="space-y-6">
               <Card className="card-elevated border-0 overflow-hidden">
                 <CardContent className="p-3 sm:p-6 md:p-8">
                   <AnimatePresence mode="wait">
@@ -783,7 +785,7 @@ export default function QuestionnairePage() {
                         Next <ChevronRight className="ml-1 sm:ml-2 h-4 w-4" />
                       </Button>
                     ) : (
-                      <Button type="submit" variant="hero" className="rounded-xl text-xs sm:text-sm px-3 sm:px-4" disabled={submitting || uploading}>
+                      <Button type="button" variant="hero" className="rounded-xl text-xs sm:text-sm px-3 sm:px-4" disabled={submitting || uploading} onClick={() => form.handleSubmit(onSubmit)()}>
                         {uploading ? "Uploading..." : submitting ? "Submitting..." : <><Send className="mr-1 sm:mr-2 h-4 w-4" /> Submit</>}
                       </Button>
                     )}
