@@ -314,10 +314,16 @@ export default function AdminDashboardPage() {
       (r.current_location || "").toLowerCase().includes(s) ||
       (r.headmaster_name || "").toLowerCase().includes(s) ||
       (r.dormitory_name || "").toLowerCase().includes(s) ||
+      (r.prefect_names_during_time || "").toLowerCase().includes(s) ||
+      (r.favorite_teachers || "").toLowerCase().includes(s) ||
+      (r.notability || "").toLowerCase().includes(s) ||
       String(r.admission_year).includes(s) ||
       String(r.graduation_year).includes(s);
     const matchHouse = houseFilter === "All" || r.house === houseFilter;
-    return matchSearch && matchHouse;
+    const fromYear = yearFrom ? parseInt(yearFrom) : 0;
+    const toYear = yearTo ? parseInt(yearTo) : 9999;
+    const matchYear = r.admission_year >= fromYear && r.graduation_year <= toYear;
+    return matchSearch && matchHouse && matchYear;
   }).sort((a, b) => a.admission_year - b.admission_year);
 
   const exportCSV = () => {
