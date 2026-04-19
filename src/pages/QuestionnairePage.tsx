@@ -1,287 +1,133 @@
 import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Form, FormControl, FormField, FormItem, FormLabel, FormMessage,
-} from "@/components/ui/form";
+import { Label } from "@/components/ui/label";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
-import { ChevronRight, ChevronLeft, Send, User, GraduationCap, BookOpen, CheckCircle, Trophy, Award, Upload, FileIcon, X, Building, Utensils, Clock, ShoppingBag, Palette } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { Send, Upload, FileIcon, X, CheckCircle, Loader2 } from "lucide-react";
+import { motion } from "framer-motion";
 import { fadeIn } from "@/lib/motion";
 import { supabase } from "@/integrations/supabase/client";
 import impalaLogo from "@/assets/impala-logo.png";
 
 const houses = ["Elgon", "Athi", "Serengeti", "Baringo", "Kirinyaga", "Marsabit", "Naivasha", "Tana"];
-
-const sportsList = [
-  "Rugby", "Football", "Hockey", "Cricket", "Athletics", "Basketball",
-  "Swimming", "Tennis", "Volleyball", "Handball", "Badminton", "Table Tennis",
-  "Cross Country", "Boxing", "Squash", "Judo", "Golf",
+const yearLabels = ["Year 1", "Year 2", "Year 3", "Year 4"];
+const leaderRoles = [
+  { key: "headmaster", label: "Headmaster / Chief Principal" },
+  { key: "chaplain", label: "Chaplain" },
+  { key: "head_of_school", label: "Head of School" },
+  { key: "head_of_house", label: "Head of House / Captain" },
+];
+const sportRoles = [
+  "Soccer", "Rugby", "Hockey", "Basketball",
+  "Cricket", "Swimming", "Tennis", "Athletics",
 ];
 
-const subjectsList = [
-  "Mathematics", "English", "Kiswahili", "Physics", "Chemistry", "Biology",
-  "History", "Geography", "CRE", "IRE", "Business Studies", "Agriculture",
-  "Computer Studies", "Art & Design", "Music", "French", "Drawing and Design",
-  "Aviation",
-];
+type LeadersByYear = Record<string, [string, string, string, string]>;
+type CaptainsByYear = Record<string, [string, string, string, string]>;
 
-const clubsList = [
-  "Drama Club", "Debate Club", "Chess Club", "Science Club", "Music Club",
-  "Young Farmers Club", "Christian Union", "Crusaders", "Journalism Club",
-  "Wildlife Club", "Mathematics Club", "French Club", "Art Club",
-  "Scouts", "St. John Ambulance", "Red Cross", "Judo Club", "Golf Club",
-  "Theatrical Group", "Rock Climbing Club", "Swimming Club",
-];
-
-const formSchema = z.object({
-  fullName: z.string().trim().max(100).optional().or(z.literal("")),
-  email: z.string().trim().email("Please enter a valid email.").max(255).optional().or(z.literal("")),
-  phone: z.string().trim().max(20).optional().or(z.literal("")),
-  currentLocation: z.string().trim().max(100).optional().or(z.literal("")),
-  currentProfession: z.string().trim().max(100).optional().or(z.literal("")),
-  admissionNumber: z.string().trim().max(20).optional().or(z.literal("")),
-  schoolNickname: z.string().trim().max(100).optional().or(z.literal("")),
-  admissionYear: z.string().regex(/^\d{4}$/, "Must be a valid 4-digit year.").optional().or(z.literal("")),
-  graduationYear: z.string().regex(/^\d{4}$/, "Must be a valid 4-digit year.").optional().or(z.literal("")),
-  house: z.string().optional().or(z.literal("")),
-  dormitoryName: z.string().trim().max(100).optional().or(z.literal("")),
-  subjectsTaken: z.array(z.string()).optional(),
-  sportsParticipated: z.array(z.string()).optional(),
-  clubsSocieties: z.array(z.string()).optional(),
-  wasPrefect: z.boolean().default(false),
-  prefectPosition: z.string().trim().max(100).optional().or(z.literal("")),
-  wasSportsCaptain: z.boolean().default(false),
-  sportsCaptainDetails: z.string().trim().max(200).optional().or(z.literal("")),
-  wasClubLeader: z.boolean().default(false),
-  clubLeaderDetails: z.string().trim().max(200).optional().or(z.literal("")),
-  // School leaders
-  headmasterName: z.string().trim().max(200).optional().or(z.literal("")),
-  deputyHeadmasterName: z.string().trim().max(200).optional().or(z.literal("")),
-  housemasterName: z.string().trim().max(200).optional().or(z.literal("")),
-  classTeacherNames: z.string().trim().max(500).optional().or(z.literal("")),
-  schoolCaptainName: z.string().trim().max(200).optional().or(z.literal("")),
-  houseCaptainName: z.string().trim().max(200).optional().or(z.literal("")),
-  prefectNamesDuringTime: z.string().trim().max(2000).optional().or(z.literal("")),
-  // Daily life
-  uniformMemories: z.string().trim().max(2000).optional().or(z.literal("")),
-  dailyRoutineMemories: z.string().trim().max(2000).optional().or(z.literal("")),
-  timetableDescription: z.string().trim().max(2000).optional().or(z.literal("")),
-  diningMemories: z.string().trim().max(2000).optional().or(z.literal("")),
-  favoriteMeals: z.string().trim().max(500).optional().or(z.literal("")),
-  canteenMemories: z.string().trim().max(2000).optional().or(z.literal("")),
-  dormitoryMemories: z.string().trim().max(2000).optional().or(z.literal("")),
-  swimmingPoolMemories: z.string().trim().max(2000).optional().or(z.literal("")),
-  weekendActivities: z.string().trim().max(2000).optional().or(z.literal("")),
-  punishmentsMemories: z.string().trim().max(2000).optional().or(z.literal("")),
-  visitingDaysMemories: z.string().trim().max(2000).optional().or(z.literal("")),
-  openingClosingDay: z.string().trim().max(2000).optional().or(z.literal("")),
-  chapelMemories: z.string().trim().max(2000).optional().or(z.literal("")),
-  entertainmentMemories: z.string().trim().max(2000).optional().or(z.literal("")),
-  gamesAndHobbies: z.string().trim().max(2000).optional().or(z.literal("")),
-  // House life
-  houseColoursDescription: z.string().trim().max(2000).optional().or(z.literal("")),
-  interHouseCompetitions: z.string().trim().max(2000).optional().or(z.literal("")),
-  // Memories
-  favoriteTeachers: z.string().trim().max(500).optional().or(z.literal("")),
-  memorableEvents: z.string().trim().max(2000).optional().or(z.literal("")),
-  funnyStories: z.string().trim().max(2000).optional().or(z.literal("")),
-  traditionsRemembered: z.string().trim().max(1000).optional().or(z.literal("")),
-  rivalryMemories: z.string().trim().max(2000).optional().or(z.literal("")),
-  culturalEvents: z.string().trim().max(2000).optional().or(z.literal("")),
-  religiousLife: z.string().trim().max(2000).optional().or(z.literal("")),
-  significantChanges: z.string().trim().max(2000).optional().or(z.literal("")),
-  // Achievements & Alumni profile
-  academicAchievements: z.string().trim().max(1000).optional().or(z.literal("")),
-  sportsAchievements: z.string().trim().max(1000).optional().or(z.literal("")),
-  careerAchievements: z.string().trim().max(1000).optional().or(z.literal("")),
-  adviceToCurrent: z.string().trim().max(1000).optional().or(z.literal("")),
-  notability: z.string().trim().max(1000).optional().or(z.literal("")),
-  signatureContribution: z.string().trim().max(1000).optional().or(z.literal("")),
-  schoolConnection: z.string().trim().max(1000).optional().or(z.literal("")),
-  legacyNote: z.string().trim().max(1000).optional().or(z.literal("")),
-  // Final
-  hasPhotosToShare: z.boolean().default(false),
-  willingToBeInterviewed: z.boolean().default(false),
-  additionalComments: z.string().trim().max(2000).optional().or(z.literal("")),
-  consentToPublish: z.boolean().optional(),
-});
-
-type FormValues = z.infer<typeof formSchema>;
-
-const steps = [
-  { id: 1, title: "Personal Info", icon: User },
-  { id: 2, title: "School Days", icon: GraduationCap },
-  { id: 3, title: "Leadership", icon: Trophy },
-  { id: 4, title: "School Leaders", icon: Building },
-  { id: 5, title: "Daily Life", icon: Clock },
-  { id: 6, title: "House & Canteen", icon: Palette },
-  { id: 7, title: "Memories", icon: BookOpen },
-  { id: 8, title: "Achievements", icon: Award },
-  { id: 9, title: "Alumni Profile", icon: User },
-  { id: 10, title: "Uploads", icon: Upload },
-  { id: 11, title: "Submit", icon: CheckCircle },
-];
+const emptyYears = (): [string, string, string, string] => ["", "", "", ""];
 
 export default function QuestionnairePage() {
-  const [currentStep, setCurrentStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
-  const [uploading, setUploading] = useState(false);
 
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      fullName: "", email: "", phone: "", currentLocation: "", currentProfession: "",
-      admissionNumber: "", schoolNickname: "", admissionYear: "", graduationYear: "", house: "",
-      dormitoryName: "",
-      subjectsTaken: [], sportsParticipated: [], clubsSocieties: [],
-      wasPrefect: false, prefectPosition: "", wasSportsCaptain: false, sportsCaptainDetails: "",
-      wasClubLeader: false, clubLeaderDetails: "",
-      headmasterName: "", deputyHeadmasterName: "", housemasterName: "",
-      classTeacherNames: "", schoolCaptainName: "", houseCaptainName: "", prefectNamesDuringTime: "",
-      uniformMemories: "", dailyRoutineMemories: "", timetableDescription: "",
-      diningMemories: "", favoriteMeals: "", canteenMemories: "",
-      dormitoryMemories: "", swimmingPoolMemories: "", weekendActivities: "", punishmentsMemories: "",
-      visitingDaysMemories: "", openingClosingDay: "", chapelMemories: "",
-      entertainmentMemories: "", gamesAndHobbies: "",
-      houseColoursDescription: "", interHouseCompetitions: "",
-      favoriteTeachers: "", memorableEvents: "", funnyStories: "", traditionsRemembered: "",
-      rivalryMemories: "", culturalEvents: "", religiousLife: "", significantChanges: "",
-      academicAchievements: "", sportsAchievements: "", careerAchievements: "", adviceToCurrent: "",
-      notability: "", signatureContribution: "", schoolConnection: "", legacyNote: "",
-      hasPhotosToShare: false, willingToBeInterviewed: false, additionalComments: "",
-      consentToPublish: false,
-    },
-  });
+  // Section 1
+  const [name, setName] = useState("");
+  const [nickname, setNickname] = useState("");
+  const [dob, setDob] = useState("");
+  const [entryYear, setEntryYear] = useState("");
+  const [exitYear, setExitYear] = useState("");
+  const [house, setHouse] = useState("");
 
-  const nextStep = (e?: React.MouseEvent) => {
-    e?.preventDefault();
-    e?.stopPropagation();
-    setCurrentStep((prev) => Math.min(prev + 1, steps.length));
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  // Section 4 — Leaders
+  const [leaders, setLeaders] = useState<LeadersByYear>(
+    Object.fromEntries(leaderRoles.map((r) => [r.key, emptyYears()])) as LeadersByYear
+  );
+
+  // Section 6 — Captains
+  const [captains, setCaptains] = useState<CaptainsByYear>(
+    Object.fromEntries(sportRoles.map((s) => [s, emptyYears()])) as CaptainsByYear
+  );
+
+  // Section 7 & 8
+  const [prefectsMethod, setPrefectsMethod] = useState("");
+  const [prefectChangeYear, setPrefectChangeYear] = useState("");
+
+  // Section 9 & 10
+  const [notableOldCambrian, setNotableOldCambrian] = useState("");
+  const [memorableEvent, setMemorableEvent] = useState("");
+
+  const updateLeader = (role: string, idx: number, value: string) => {
+    setLeaders((prev) => {
+      const row = [...prev[role]] as [string, string, string, string];
+      row[idx] = value;
+      return { ...prev, [role]: row };
+    });
   };
 
-  const prevStep = () => {
-    setCurrentStep((prev) => Math.max(prev - 1, 1));
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  const updateCaptain = (sport: string, idx: number, value: string) => {
+    setCaptains((prev) => {
+      const row = [...prev[sport]] as [string, string, string, string];
+      row[idx] = value;
+      return { ...prev, [sport]: row };
+    });
   };
 
-  async function onSubmit(values: FormValues) {
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) setUploadedFiles((prev) => [...prev, ...Array.from(e.target.files!)]);
+  };
+  const removeFile = (i: number) => setUploadedFiles((prev) => prev.filter((_, idx) => idx !== i));
+
+  const handleSubmit = async () => {
     setSubmitting(true);
     try {
-      let filePaths: string[] = [];
+      const filePaths: string[] = [];
       if (uploadedFiles.length > 0) {
-        setUploading(true);
         const timestamp = Date.now();
         for (const file of uploadedFiles) {
           const filePath = `${timestamp}-${Math.random().toString(36).slice(2)}/${file.name}`;
-          const { error: uploadError } = await supabase.storage
+          const { error: upErr } = await supabase.storage
             .from("questionnaire-uploads")
             .upload(filePath, file);
-          if (uploadError) { console.error("Upload error:", uploadError); continue; }
+          if (upErr) { console.error("Upload error:", upErr); continue; }
           const { data: urlData } = supabase.storage
             .from("questionnaire-uploads")
             .getPublicUrl(filePath);
           filePaths.push(urlData.publicUrl);
         }
-        setUploading(false);
       }
 
       const { error } = await supabase.from("questionnaire_responses").insert({
-        full_name: values.fullName || "Anonymous",
-        email: values.email || null,
-        phone: values.phone || null,
-        current_location: values.currentLocation || null,
-        current_profession: values.currentProfession || null,
-        admission_number: values.admissionNumber || null,
-        school_nickname: values.schoolNickname || null,
-        admission_year: values.admissionYear ? parseInt(values.admissionYear) : 0,
-        graduation_year: values.graduationYear ? parseInt(values.graduationYear) : 0,
-        house: values.house || "Unknown",
-        dormitory_name: values.dormitoryName || null,
-        subjects_taken: values.subjectsTaken?.length ? values.subjectsTaken : null,
-        sports_participated: values.sportsParticipated?.length ? values.sportsParticipated : null,
-        clubs_societies: values.clubsSocieties?.length ? values.clubsSocieties : null,
-        was_prefect: values.wasPrefect,
-        prefect_position: values.prefectPosition || null,
-        was_sports_captain: values.wasSportsCaptain,
-        sports_captain_details: values.sportsCaptainDetails || null,
-        was_club_leader: values.wasClubLeader,
-        club_leader_details: values.clubLeaderDetails || null,
-        headmaster_name: values.headmasterName || null,
-        deputy_headmaster_name: values.deputyHeadmasterName || null,
-        housemaster_name: values.housemasterName || null,
-        class_teacher_names: values.classTeacherNames || null,
-        school_captain_name: values.schoolCaptainName || null,
-        house_captain_name: values.houseCaptainName || null,
-        prefect_names_during_time: values.prefectNamesDuringTime || null,
-        uniform_memories: values.uniformMemories || null,
-        daily_routine_memories: values.dailyRoutineMemories || null,
-        timetable_description: values.timetableDescription || null,
-        dining_memories: values.diningMemories || null,
-        favorite_meals: values.favoriteMeals || null,
-        canteen_memories: values.canteenMemories || null,
-        dormitory_memories: values.dormitoryMemories || null,
-        swimming_pool_memories: values.swimmingPoolMemories || null,
-        weekend_activities: values.weekendActivities || null,
-        punishments_memories: values.punishmentsMemories || null,
-        visiting_days_memories: values.visitingDaysMemories || null,
-        opening_closing_day: values.openingClosingDay || null,
-        chapel_memories: values.chapelMemories || null,
-        entertainment_memories: values.entertainmentMemories || null,
-        games_and_hobbies: values.gamesAndHobbies || null,
-        house_colours_description: values.houseColoursDescription || null,
-        inter_house_competitions: values.interHouseCompetitions || null,
-        favorite_teachers: values.favoriteTeachers || null,
-        memorable_events: values.memorableEvents || null,
-        funny_stories: values.funnyStories || null,
-        traditions_remembered: values.traditionsRemembered || null,
-        rivalry_memories: values.rivalryMemories || null,
-        cultural_events: values.culturalEvents || null,
-        religious_life: values.religiousLife || null,
-        significant_changes: values.significantChanges || null,
-        academic_achievements: values.academicAchievements || null,
-        sports_achievements: values.sportsAchievements || null,
-        career_achievements: values.careerAchievements || null,
-        advice_to_current: values.adviceToCurrent || null,
-        notability: values.notability || null,
-        signature_contribution: values.signatureContribution || null,
-        school_connection: values.schoolConnection || null,
-        legacy_note: values.legacyNote || null,
-        has_photos_to_share: values.hasPhotosToShare,
-        willing_to_be_interviewed: values.willingToBeInterviewed,
-        additional_comments: values.additionalComments || null,
-        uploaded_files: filePaths.length > 0 ? filePaths : null,
+        full_name: name || "Anonymous",
+        school_nickname: nickname || null,
+        date_of_birth: dob || null,
+        admission_year: entryYear ? parseInt(entryYear) : 0,
+        graduation_year: exitYear ? parseInt(exitYear) : 0,
+        house: house || "Unknown",
+        leaders_by_year: leaders as any,
+        captains_by_year: captains as any,
+        prefects_elected_or_appointed: prefectsMethod || null,
+        prefect_change_year: prefectChangeYear || null,
+        notable_old_cambrian: notableOldCambrian || null,
+        memorable_event: memorableEvent || null,
+        uploaded_files: filePaths.length ? filePaths : null,
       } as any);
 
       if (error) throw error;
       setSubmitted(true);
-      toast.success("Story submitted successfully!", {
-        description: "Thank you for contributing to the Nairobi School Chronicles.",
-      });
-    } catch (error: any) {
-      toast.error("Failed to submit", { description: error.message });
+      toast.success("Submitted!", { description: "Thank you for contributing." });
+    } catch (e: any) {
+      toast.error("Failed to submit", { description: e.message });
     } finally {
       setSubmitting(false);
-      setUploading(false);
     }
-  }
-
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) setUploadedFiles((prev) => [...prev, ...Array.from(e.target.files!)]);
   };
-  const removeFile = (index: number) => setUploadedFiles((prev) => prev.filter((_, i) => i !== index));
 
   if (submitted) {
     return (
@@ -289,15 +135,30 @@ export default function QuestionnairePage() {
         <Card className="card-elevated border-0 max-w-lg text-center p-12">
           <CheckCircle className="w-16 h-16 text-accent mx-auto mb-6" />
           <h2 className="font-display text-3xl font-bold text-foreground mb-4">Thank You!</h2>
-          <p className="text-muted-foreground mb-8">Your story has been recorded. The Patch community thanks you for your contribution to the Commemorative Book.</p>
-          <Button variant="hero" onClick={() => { setSubmitted(false); setCurrentStep(1); form.reset(); setUploadedFiles([]); }}>Submit Another Response</Button>
+          <p className="text-muted-foreground mb-8">
+            Your story has been recorded. The Patch community thanks you for your contribution.
+          </p>
+          <Button
+            variant="hero"
+            onClick={() => {
+              setSubmitted(false);
+              setName(""); setNickname(""); setDob(""); setEntryYear(""); setExitYear(""); setHouse("");
+              setLeaders(Object.fromEntries(leaderRoles.map((r) => [r.key, emptyYears()])) as LeadersByYear);
+              setCaptains(Object.fromEntries(sportRoles.map((s) => [s, emptyYears()])) as CaptainsByYear);
+              setPrefectsMethod(""); setPrefectChangeYear("");
+              setNotableOldCambrian(""); setMemorableEvent(""); setUploadedFiles([]);
+              window.scrollTo({ top: 0 });
+            }}
+          >
+            Submit Another Response
+          </Button>
         </Card>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background relative overflow-hidden">
+    <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="bg-primary border-b border-accent/20">
         <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 flex items-center gap-3 sm:gap-4">
@@ -309,497 +170,169 @@ export default function QuestionnairePage() {
         </div>
       </div>
 
-      <div className="absolute top-0 left-0 w-full h-full bg-dots opacity-40 pointer-events-none" />
-      <div className="container mx-auto px-3 sm:px-6 relative z-10 py-4 sm:py-8">
-        <motion.div initial="hidden" animate="show" variants={fadeIn("up", 0.2)} className="relative max-w-4xl mx-auto">
-          <div className="text-center mb-4 sm:mb-8">
-            <h2 className="font-display text-xl sm:text-2xl md:text-4xl font-bold text-foreground mb-1 sm:mb-2">Share Your Story</h2>
-            <p className="text-muted-foreground text-xs sm:text-base max-w-2xl mx-auto">
-              Your memories are the bricks that build our legacy. Help us document the true spirit of the Patch.
+      <div className="container mx-auto px-3 sm:px-6 py-6 sm:py-10">
+        <motion.div initial="hidden" animate="show" variants={fadeIn("up", 0.2)} className="max-w-4xl mx-auto">
+          <div className="text-center mb-6 sm:mb-10">
+            <h2 className="font-display text-2xl sm:text-4xl font-bold text-foreground mb-2">Share Your Story</h2>
+            <p className="text-muted-foreground text-sm sm:text-base max-w-2xl mx-auto">
+              All fields are optional — fill in what you remember.
             </p>
           </div>
 
-          {/* Progress Steps - scrollable on mobile */}
-          <div className="mb-6 sm:mb-8">
-            <div className="flex sm:hidden items-center justify-between mb-2 px-1">
-              <span className="text-xs font-medium text-muted-foreground">Step {currentStep} of {steps.length}</span>
-              <span className="text-xs font-semibold text-accent">{steps[currentStep - 1].title}</span>
-            </div>
-            <div className="w-full h-2 bg-primary/10 rounded-full sm:hidden mb-4">
-              <div className="h-full bg-accent rounded-full transition-all duration-500" style={{ width: `${(currentStep / steps.length) * 100}%` }} />
-            </div>
-            <div className="hidden sm:flex justify-between items-center relative px-0 sm:px-2">
-              <div className="absolute left-0 top-1/2 w-full h-1 bg-primary/10 -z-10" />
-              <div className="absolute left-0 top-1/2 h-1 bg-accent -z-10 transition-all duration-500" style={{ width: `${((currentStep - 1) / (steps.length - 1)) * 100}%` }} />
-              {steps.map((step) => (
-                <button type="button" key={step.id} onClick={() => { setCurrentStep(step.id); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="flex flex-col items-center gap-1 cursor-pointer">
-                  <div className={`w-7 h-7 md:w-9 md:h-9 rounded-full flex items-center justify-center transition-all duration-300 border-3 ${
-                    currentStep >= step.id ? "bg-accent border-accent text-primary shadow-lg scale-110" : "bg-card border-primary/10 text-muted-foreground"
-                  }`}>
-                    <step.icon className="w-3 h-3 md:w-4 md:h-4" />
+          <div className="space-y-6">
+            {/* 1-3 + Entry/Exit/House */}
+            <Card className="border-0 card-elevated">
+              <CardContent className="pt-6 space-y-4">
+                <h3 className="font-display text-xl font-bold text-foreground mb-2">Personal Details</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div><Label>Name</Label><Input value={name} onChange={(e) => setName(e.target.value)} /></div>
+                  <div><Label>Nickname</Label><Input value={nickname} onChange={(e) => setNickname(e.target.value)} /></div>
+                  <div><Label>Date of Birth</Label><Input type="date" value={dob} onChange={(e) => setDob(e.target.value)} /></div>
+                  <div>
+                    <Label>House</Label>
+                    <Select value={house} onValueChange={setHouse}>
+                      <SelectTrigger><SelectValue placeholder="Select house" /></SelectTrigger>
+                      <SelectContent>
+                        {houses.map((h) => <SelectItem key={h} value={h}>{h}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
                   </div>
-                  <span className="text-[7px] md:text-[10px] font-medium text-muted-foreground">{step.title}</span>
-                </button>
-              ))}
+                  <div><Label>Entry Year</Label><Input inputMode="numeric" maxLength={4} value={entryYear} onChange={(e) => setEntryYear(e.target.value)} /></div>
+                  <div><Label>Exit Year</Label><Input inputMode="numeric" maxLength={4} value={exitYear} onChange={(e) => setExitYear(e.target.value)} /></div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* 4 - Leaders */}
+            <Card className="border-0 card-elevated">
+              <CardContent className="pt-6">
+                <h3 className="font-display text-xl font-bold text-foreground mb-1">During your years, who was…</h3>
+                <p className="text-muted-foreground text-sm mb-4">Fill the names you remember for each year you were at the school.</p>
+                <div className="overflow-x-auto -mx-2 sm:mx-0">
+                  <table className="w-full min-w-[640px] text-sm">
+                    <thead>
+                      <tr className="border-b">
+                        <th className="text-left p-2 w-48">Role</th>
+                        {yearLabels.map((y) => <th key={y} className="text-left p-2">{y}</th>)}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {leaderRoles.map((r) => (
+                        <tr key={r.key} className="border-b last:border-0">
+                          <td className="p-2 font-medium text-foreground align-middle">{r.label}</td>
+                          {yearLabels.map((_, i) => (
+                            <td key={i} className="p-1.5">
+                              <Input value={leaders[r.key][i]} onChange={(e) => updateLeader(r.key, i, e.target.value)} className="h-9" />
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* 6 - Captains */}
+            <Card className="border-0 card-elevated">
+              <CardContent className="pt-6">
+                <h3 className="font-display text-xl font-bold text-foreground mb-1">During your years, who was…</h3>
+                <p className="text-muted-foreground text-sm mb-4">Sports captains by year.</p>
+                <div className="overflow-x-auto -mx-2 sm:mx-0">
+                  <table className="w-full min-w-[640px] text-sm">
+                    <thead>
+                      <tr className="border-b">
+                        <th className="text-left p-2 w-48">Sport</th>
+                        {yearLabels.map((y) => <th key={y} className="text-left p-2">{y}</th>)}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {sportRoles.map((s) => (
+                        <tr key={s} className="border-b last:border-0">
+                          <td className="p-2 font-medium text-foreground align-middle">{s} Captain</td>
+                          {yearLabels.map((_, i) => (
+                            <td key={i} className="p-1.5">
+                              <Input value={captains[s][i]} onChange={(e) => updateCaptain(s, i, e.target.value)} className="h-9" />
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* 7 & 8 - Prefects */}
+            <Card className="border-0 card-elevated">
+              <CardContent className="pt-6 space-y-4">
+                <div>
+                  <Label>Were prefects elected or appointed in your time?</Label>
+                  <Select value={prefectsMethod} onValueChange={setPrefectsMethod}>
+                    <SelectTrigger><SelectValue placeholder="Select…" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Elected">Elected</SelectItem>
+                      <SelectItem value="Appointed">Appointed</SelectItem>
+                      <SelectItem value="Both">Both / Mixed</SelectItem>
+                      <SelectItem value="Unsure">Don't remember</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>When did the change occur (they were originally appointed)?</Label>
+                  <Input value={prefectChangeYear} onChange={(e) => setPrefectChangeYear(e.target.value)} placeholder="e.g. 1998 or 'around the early 90s'" />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* 8b - Uploads */}
+            <Card className="border-0 card-elevated">
+              <CardContent className="pt-6">
+                <Label>Attach any documents you may have</Label>
+                <p className="text-muted-foreground text-xs mb-3">Fees invoice, school report, menu, printed program, etc.</p>
+                <label className="border-2 border-dashed border-border rounded-md p-6 flex flex-col items-center justify-center cursor-pointer hover:border-accent transition-colors">
+                  <Upload className="h-8 w-8 text-muted-foreground mb-2" />
+                  <span className="text-sm text-muted-foreground">Click to upload files</span>
+                  <input type="file" multiple className="hidden" onChange={handleFileSelect} />
+                </label>
+                {uploadedFiles.length > 0 && (
+                  <ul className="mt-3 space-y-2">
+                    {uploadedFiles.map((f, i) => (
+                      <li key={i} className="flex items-center justify-between bg-muted/50 rounded px-3 py-2 text-sm">
+                        <span className="flex items-center gap-2 truncate"><FileIcon className="h-4 w-4 shrink-0" /><span className="truncate">{f.name}</span></span>
+                        <button onClick={() => removeFile(i)} className="text-muted-foreground hover:text-destructive shrink-0"><X className="h-4 w-4" /></button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* 9 */}
+            <Card className="border-0 card-elevated">
+              <CardContent className="pt-6">
+                <Label>Name an Old Cambrian who in your view stood above many Kenyans</Label>
+                <p className="text-muted-foreground text-xs mb-3">Include name, years at school, and reason.</p>
+                <Textarea rows={4} value={notableOldCambrian} onChange={(e) => setNotableOldCambrian(e.target.value)} />
+              </CardContent>
+            </Card>
+
+            {/* 10 */}
+            <Card className="border-0 card-elevated">
+              <CardContent className="pt-6">
+                <Label>An event that stands out in your memory of the school</Label>
+                <Textarea rows={5} value={memorableEvent} onChange={(e) => setMemorableEvent(e.target.value)} className="mt-2" />
+              </CardContent>
+            </Card>
+
+            <div className="flex justify-end pt-2 pb-10">
+              <Button variant="hero" size="lg" onClick={handleSubmit} disabled={submitting}>
+                {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                Submit
+              </Button>
             </div>
           </div>
-
-          <Form {...form}>
-            <form onSubmit={(e) => e.preventDefault()} className="space-y-6">
-              <Card className="card-elevated border-0 overflow-hidden">
-                <CardContent className="p-3 sm:p-6 md:p-8">
-                  <AnimatePresence mode="wait">
-
-                    {/* Step 1: Personal Info */}
-                    {currentStep === 1 && (
-                      <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
-                        <CardHeader className="p-0 pb-4">
-                          <CardTitle className="font-display text-foreground">Personal Info</CardTitle>
-                          <CardDescription>Tell us about yourself.</CardDescription>
-                        </CardHeader>
-                        <FormField control={form.control} name="fullName" render={({ field }) => (
-                          <FormItem><FormLabel>Full Name *</FormLabel><FormControl><Input className="rounded-xl" placeholder="Your full name" {...field} /></FormControl><FormMessage /></FormItem>
-                        )} />
-                        <FormField control={form.control} name="schoolNickname" render={({ field }) => (
-                          <FormItem><FormLabel>School Nickname</FormLabel><FormControl><Input className="rounded-xl" placeholder="What were you known as at school?" {...field} /></FormControl><FormMessage /></FormItem>
-                        )} />
-                        <div className="grid gap-6 sm:grid-cols-2">
-                          <FormField control={form.control} name="email" render={({ field }) => (
-                            <FormItem><FormLabel>Email</FormLabel><FormControl><Input type="email" className="rounded-xl" placeholder="you@example.com" {...field} /></FormControl><FormMessage /></FormItem>
-                          )} />
-                          <FormField control={form.control} name="phone" render={({ field }) => (
-                            <FormItem><FormLabel>Phone</FormLabel><FormControl><Input className="rounded-xl" placeholder="+254 ..." {...field} /></FormControl><FormMessage /></FormItem>
-                          )} />
-                        </div>
-                        <div className="grid gap-6 sm:grid-cols-2">
-                          <FormField control={form.control} name="currentLocation" render={({ field }) => (
-                            <FormItem><FormLabel>Current Location</FormLabel><FormControl><Input className="rounded-xl" placeholder="City, Country" {...field} /></FormControl><FormMessage /></FormItem>
-                          )} />
-                          <FormField control={form.control} name="currentProfession" render={({ field }) => (
-                            <FormItem><FormLabel>Current Profession</FormLabel><FormControl><Input className="rounded-xl" placeholder="e.g. Engineer, Doctor" {...field} /></FormControl><FormMessage /></FormItem>
-                          )} />
-                        </div>
-                      </motion.div>
-                    )}
-
-                    {/* Step 2: School Days */}
-                    {currentStep === 2 && (
-                      <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
-                        <CardHeader className="p-0 pb-4">
-                          <CardTitle className="font-display text-foreground">School Days</CardTitle>
-                          <CardDescription>When and where you belonged.</CardDescription>
-                        </CardHeader>
-                        <div className="grid gap-6 sm:grid-cols-3">
-                          <FormField control={form.control} name="admissionNumber" render={({ field }) => (
-                            <FormItem><FormLabel>Admission Number</FormLabel><FormControl><Input className="rounded-xl" placeholder="e.g. 12345" {...field} /></FormControl><FormMessage /></FormItem>
-                          )} />
-                          <FormField control={form.control} name="admissionYear" render={({ field }) => (
-                            <FormItem><FormLabel>Admission Year *</FormLabel><FormControl><Input className="rounded-xl" placeholder="e.g. 1995" {...field} /></FormControl><FormMessage /></FormItem>
-                          )} />
-                          <FormField control={form.control} name="graduationYear" render={({ field }) => (
-                            <FormItem><FormLabel>Graduation Year *</FormLabel><FormControl><Input className="rounded-xl" placeholder="e.g. 1999" {...field} /></FormControl><FormMessage /></FormItem>
-                          )} />
-                        </div>
-                        <div className="grid gap-6 sm:grid-cols-2">
-                          <FormField control={form.control} name="house" render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>House *</FormLabel>
-                              <Select onValueChange={field.onChange} value={field.value}>
-                                <FormControl><SelectTrigger className="rounded-xl"><SelectValue placeholder="Select your house" /></SelectTrigger></FormControl>
-                                <SelectContent>{houses.map((h) => (<SelectItem key={h} value={h}>{h}</SelectItem>))}</SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                          )} />
-                          <FormField control={form.control} name="dormitoryName" render={({ field }) => (
-                            <FormItem><FormLabel>Dormitory Name</FormLabel><FormControl><Input className="rounded-xl" placeholder="e.g. Dorm A, etc." {...field} /></FormControl><FormMessage /></FormItem>
-                          )} />
-                        </div>
-                        <div>
-                          <FormLabel>Subjects Taken</FormLabel>
-                          <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2">
-                            {subjectsList.map((subject) => {
-                              const selected = form.watch("subjectsTaken") || [];
-                              return (
-                                <label key={subject} className="flex items-center gap-2 text-sm cursor-pointer p-2 rounded-lg hover:bg-secondary">
-                                  <Checkbox checked={selected.includes(subject)} onCheckedChange={(checked) => {
-                                    const current = form.getValues("subjectsTaken") || [];
-                                    form.setValue("subjectsTaken", checked ? [...current, subject] : current.filter((s) => s !== subject));
-                                  }} />
-                                  {subject}
-                                </label>
-                              );
-                            })}
-                          </div>
-                        </div>
-                        <div>
-                          <FormLabel>Clubs & Societies</FormLabel>
-                          <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2">
-                            {clubsList.map((club) => {
-                              const selected = form.watch("clubsSocieties") || [];
-                              return (
-                                <label key={club} className="flex items-center gap-2 text-sm cursor-pointer p-2 rounded-lg hover:bg-secondary">
-                                  <Checkbox checked={selected.includes(club)} onCheckedChange={(checked) => {
-                                    const current = form.getValues("clubsSocieties") || [];
-                                    form.setValue("clubsSocieties", checked ? [...current, club] : current.filter((s) => s !== club));
-                                  }} />
-                                  {club}
-                                </label>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      </motion.div>
-                    )}
-
-                    {/* Step 3: Leadership & Sports */}
-                    {currentStep === 3 && (
-                      <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
-                        <CardHeader className="p-0 pb-4">
-                          <CardTitle className="font-display text-foreground">Leadership & Sports</CardTitle>
-                          <CardDescription>Your roles and athletic life at the Patch.</CardDescription>
-                        </CardHeader>
-                        <div className="space-y-4">
-                          <div className="flex items-center gap-3 p-4 rounded-xl border border-border">
-                            <Checkbox checked={form.watch("wasPrefect")} onCheckedChange={(v) => form.setValue("wasPrefect", !!v)} />
-                            <span className="font-medium">I was a Prefect</span>
-                          </div>
-                          {form.watch("wasPrefect") && (
-                            <FormField control={form.control} name="prefectPosition" render={({ field }) => (
-                              <FormItem><FormLabel>Prefect Position</FormLabel><FormControl><Input className="rounded-xl" placeholder="e.g. Head Boy, Dining Hall Prefect" {...field} /></FormControl><FormMessage /></FormItem>
-                            )} />
-                          )}
-                          <div className="flex items-center gap-3 p-4 rounded-xl border border-border">
-                            <Checkbox checked={form.watch("wasSportsCaptain")} onCheckedChange={(v) => form.setValue("wasSportsCaptain", !!v)} />
-                            <span className="font-medium">I was a Sports Captain</span>
-                          </div>
-                          {form.watch("wasSportsCaptain") && (
-                            <FormField control={form.control} name="sportsCaptainDetails" render={({ field }) => (
-                              <FormItem><FormLabel>Which sport and year?</FormLabel><FormControl><Input className="rounded-xl" placeholder="e.g. Rugby Captain 1998" {...field} /></FormControl><FormMessage /></FormItem>
-                            )} />
-                          )}
-                          <div className="flex items-center gap-3 p-4 rounded-xl border border-border">
-                            <Checkbox checked={form.watch("wasClubLeader")} onCheckedChange={(v) => form.setValue("wasClubLeader", !!v)} />
-                            <span className="font-medium">I was a Club/Society Leader</span>
-                          </div>
-                          {form.watch("wasClubLeader") && (
-                            <FormField control={form.control} name="clubLeaderDetails" render={({ field }) => (
-                              <FormItem><FormLabel>Details</FormLabel><FormControl><Input className="rounded-xl" placeholder="e.g. Chairman, Drama Club" {...field} /></FormControl><FormMessage /></FormItem>
-                            )} />
-                          )}
-                        </div>
-                        <div>
-                          <FormLabel>Sports Participated</FormLabel>
-                          <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2">
-                            {sportsList.map((sport) => {
-                              const selected = form.watch("sportsParticipated") || [];
-                              return (
-                                <label key={sport} className="flex items-center gap-2 text-sm cursor-pointer p-2 rounded-lg hover:bg-secondary">
-                                  <Checkbox checked={selected.includes(sport)} onCheckedChange={(checked) => {
-                                    const current = form.getValues("sportsParticipated") || [];
-                                    form.setValue("sportsParticipated", checked ? [...current, sport] : current.filter((s) => s !== sport));
-                                  }} />
-                                  {sport}
-                                </label>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      </motion.div>
-                    )}
-
-                    {/* Step 4: School Leaders */}
-                    {currentStep === 4 && (
-                      <motion.div key="step4" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
-                        <CardHeader className="p-0 pb-4">
-                          <CardTitle className="font-display text-foreground">School Leaders & Staff</CardTitle>
-                          <CardDescription>Help us document who led the school during your time. This helps build the Roll of Honour.</CardDescription>
-                        </CardHeader>
-                        <div className="grid gap-6 sm:grid-cols-2">
-                          <FormField control={form.control} name="headmasterName" render={({ field }) => (
-                            <FormItem><FormLabel>Headmaster / Principal</FormLabel><FormControl><Input className="rounded-xl" placeholder="Who was the headmaster?" {...field} /></FormControl><FormMessage /></FormItem>
-                          )} />
-                          <FormField control={form.control} name="deputyHeadmasterName" render={({ field }) => (
-                            <FormItem><FormLabel>Deputy Headmaster</FormLabel><FormControl><Input className="rounded-xl" placeholder="Deputy head during your time" {...field} /></FormControl><FormMessage /></FormItem>
-                          )} />
-                        </div>
-                        <div className="grid gap-6 sm:grid-cols-2">
-                          <FormField control={form.control} name="housemasterName" render={({ field }) => (
-                            <FormItem><FormLabel>Your Housemaster</FormLabel><FormControl><Input className="rounded-xl" placeholder="Who was your housemaster?" {...field} /></FormControl><FormMessage /></FormItem>
-                          )} />
-                          <FormField control={form.control} name="classTeacherNames" render={({ field }) => (
-                            <FormItem><FormLabel>Class Teachers</FormLabel><FormControl><Input className="rounded-xl" placeholder="Names of your class teachers" {...field} /></FormControl><FormMessage /></FormItem>
-                          )} />
-                        </div>
-                        <div className="grid gap-6 sm:grid-cols-2">
-                          <FormField control={form.control} name="schoolCaptainName" render={({ field }) => (
-                            <FormItem><FormLabel>School Captain / Head Boy</FormLabel><FormControl><Input className="rounded-xl" placeholder="Who was Head of School?" {...field} /></FormControl><FormMessage /></FormItem>
-                          )} />
-                          <FormField control={form.control} name="houseCaptainName" render={({ field }) => (
-                            <FormItem><FormLabel>Your House Captain</FormLabel><FormControl><Input className="rounded-xl" placeholder="Who led your house?" {...field} /></FormControl><FormMessage /></FormItem>
-                          )} />
-                        </div>
-                        <FormField control={form.control} name="prefectNamesDuringTime" render={({ field }) => (
-                          <FormItem><FormLabel>Other Prefects You Remember</FormLabel><FormControl><Textarea className="rounded-xl min-h-[100px]" placeholder="List prefects you remember from your time — names, positions (e.g. Dining Hall Prefect, Games Prefect), and years if possible..." {...field} /></FormControl><FormMessage /></FormItem>
-                        )} />
-                        <FormField control={form.control} name="favoriteTeachers" render={({ field }) => (
-                          <FormItem><FormLabel>Favourite Teachers & Why</FormLabel><FormControl><Textarea className="rounded-xl min-h-[80px]" placeholder="Names, subjects, and why they stood out..." {...field} /></FormControl><FormMessage /></FormItem>
-                        )} />
-                      </motion.div>
-                    )}
-
-                    {/* Step 5: Daily Life */}
-                    {currentStep === 5 && (
-                      <motion.div key="step5" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
-                        <CardHeader className="p-0 pb-4">
-                          <CardTitle className="font-display text-foreground">Daily Life at the Patch</CardTitle>
-                          <CardDescription>What was a typical day, week, or term like? (Inspired by the 1972 and 2011 records)</CardDescription>
-                        </CardHeader>
-                        <FormField control={form.control} name="uniformMemories" render={({ field }) => (
-                          <FormItem><FormLabel>Uniform & Dress Code</FormLabel><FormControl><Textarea className="rounded-xl min-h-[80px]" placeholder="Describe the uniform — school dress, town dress, Sunday dress, sports kit. What were the rules? Did dress code change over the years?" {...field} /></FormControl><FormMessage /></FormItem>
-                        )} />
-                        <FormField control={form.control} name="timetableDescription" render={({ field }) => (
-                          <FormItem><FormLabel>Weekly Timetable & Schedule</FormLabel><FormControl><Textarea className="rounded-xl min-h-[100px]" placeholder="Describe a typical week — what happened on each day? Monday activities, Wednesday shopping, Saturday sports, Sunday chapel? What time did you wake up and sleep?" {...field} /></FormControl><FormMessage /></FormItem>
-                        )} />
-                        <FormField control={form.control} name="dailyRoutineMemories" render={({ field }) => (
-                          <FormItem><FormLabel>Daily Routine</FormLabel><FormControl><Textarea className="rounded-xl min-h-[80px]" placeholder="Walk us through a typical day — wake-up bell, morning prep, classes, breaks, games time, evening prep, lights out..." {...field} /></FormControl><FormMessage /></FormItem>
-                        )} />
-                        <FormField control={form.control} name="diningMemories" render={({ field }) => (
-                          <FormItem><FormLabel>Dining Hall & Food</FormLabel><FormControl><Textarea className="rounded-xl min-h-[80px]" placeholder="What was the food like? Breakfast (tea & 3 slices of bread?), lunch (rice & beans?), supper (ugali & cabbage?). How did meals change over the years?" {...field} /></FormControl><FormMessage /></FormItem>
-                        )} />
-                        <FormField control={form.control} name="favoriteMeals" render={({ field }) => (
-                          <FormItem><FormLabel>Favourite (or Most Hated) Meals</FormLabel><FormControl><Input className="rounded-xl" placeholder="e.g. Sunday eggs, githeri, spaghetti & beans, cocoa tea..." {...field} /></FormControl><FormMessage /></FormItem>
-                        )} />
-                        <FormField control={form.control} name="canteenMemories" render={({ field }) => (
-                          <FormItem><FormLabel>Canteen / Tuck Shop</FormLabel><FormControl><Textarea className="rounded-xl min-h-[80px]" placeholder="What was sold in the canteen during your time? Snacks, drinks, sweets? How much did things cost? Did the canteen change over the years?" {...field} /></FormControl><FormMessage /></FormItem>
-                        )} />
-                        <FormField control={form.control} name="dormitoryMemories" render={({ field }) => (
-                          <FormItem><FormLabel>Dormitory Life</FormLabel><FormControl><Textarea className="rounded-xl min-h-[80px]" placeholder="What was life like in the dorms? Pranks, friendships, late-night stories, monos system..." {...field} /></FormControl><FormMessage /></FormItem>
-                        )} />
-                        <FormField control={form.control} name="swimmingPoolMemories" render={({ field }) => (
-                          <FormItem><FormLabel>Swimming Pool / Lido</FormLabel><FormControl><Textarea className="rounded-xl min-h-[80px]" placeholder="Memories of the swimming pool — swimming standards, lido supervisors, swimming matches, diving competitions..." {...field} /></FormControl><FormMessage /></FormItem>
-                        )} />
-                        <FormField control={form.control} name="visitingDaysMemories" render={({ field }) => (
-                          <FormItem><FormLabel>Visiting Days</FormLabel><FormControl><Textarea className="rounded-xl min-h-[80px]" placeholder="What were visiting days like? What did parents bring? Where did you go? Any memorable visiting day stories?" {...field} /></FormControl><FormMessage /></FormItem>
-                        )} />
-                        <FormField control={form.control} name="openingClosingDay" render={({ field }) => (
-                          <FormItem><FormLabel>Opening & Closing Days</FormLabel><FormControl><Textarea className="rounded-xl min-h-[80px]" placeholder="Describe opening day and closing day — the excitement, packing, luggage, transport..." {...field} /></FormControl><FormMessage /></FormItem>
-                        )} />
-                      </motion.div>
-                    )}
-
-                    {/* Step 6: House Life & Canteen */}
-                    {currentStep === 6 && (
-                      <motion.div key="step6" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
-                        <CardHeader className="p-0 pb-4">
-                          <CardTitle className="font-display text-foreground">House Life & Extra-Curricular</CardTitle>
-                          <CardDescription>Tell us about house culture, competitions, and life beyond the classroom.</CardDescription>
-                        </CardHeader>
-                        <FormField control={form.control} name="houseColoursDescription" render={({ field }) => (
-                          <FormItem><FormLabel>House Colours & Identity</FormLabel><FormControl><Textarea className="rounded-xl min-h-[100px]" placeholder="What were your house colours? Describe the house identity — motto, war cry, house songs, house spirit. How did you earn your house colours?" {...field} /></FormControl><FormMessage /></FormItem>
-                        )} />
-                        <FormField control={form.control} name="interHouseCompetitions" render={({ field }) => (
-                          <FormItem><FormLabel>Inter-House Competitions</FormLabel><FormControl><Textarea className="rounded-xl min-h-[100px]" placeholder="How did inter-house competitions work? Sports days, rugby, hockey, swimming, athletics, drama, music, academics. Which house dominated? Any legendary matches or rivalries?" {...field} /></FormControl><FormMessage /></FormItem>
-                        )} />
-                        <FormField control={form.control} name="weekendActivities" render={({ field }) => (
-                          <FormItem><FormLabel>Weekend & Free Time Activities</FormLabel><FormControl><Textarea className="rounded-xl min-h-[80px]" placeholder="Saturday shopping trips to town, Sunday walks, film screenings in school hall, games..." {...field} /></FormControl><FormMessage /></FormItem>
-                        )} />
-                        <FormField control={form.control} name="entertainmentMemories" render={({ field }) => (
-                          <FormItem><FormLabel>Entertainment & Films</FormLabel><FormControl><Textarea className="rounded-xl min-h-[80px]" placeholder="Saturday night films in school hall, concerts, piano recitals, band practice, variety shows..." {...field} /></FormControl><FormMessage /></FormItem>
-                        )} />
-                        <FormField control={form.control} name="chapelMemories" render={({ field }) => (
-                          <FormItem><FormLabel>Chapel & Sunday Services</FormLabel><FormControl><Textarea className="rounded-xl min-h-[80px]" placeholder="Sunday morning services, Holy Communion, Compline, the Chaplain, confirmations, Lenten services..." {...field} /></FormControl><FormMessage /></FormItem>
-                        )} />
-                        <FormField control={form.control} name="gamesAndHobbies" render={({ field }) => (
-                          <FormItem><FormLabel>Games, Hobbies & Pastimes</FormLabel><FormControl><Textarea className="rounded-xl min-h-[80px]" placeholder="What did you do for fun? Card games, rock climbing expeditions, golf, art outings, stamp collecting..." {...field} /></FormControl><FormMessage /></FormItem>
-                        )} />
-                        <FormField control={form.control} name="punishmentsMemories" render={({ field }) => (
-                          <FormItem><FormLabel>Punishments & Discipline</FormLabel><FormControl><Textarea className="rounded-xl min-h-[80px]" placeholder="Detentions, manual labour, duty masters, any memorable punishment stories..." {...field} /></FormControl><FormMessage /></FormItem>
-                        )} />
-                      </motion.div>
-                    )}
-
-                    {/* Step 7: Memories */}
-                    {currentStep === 7 && (
-                      <motion.div key="step7" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
-                        <CardHeader className="p-0 pb-4">
-                          <CardTitle className="font-display text-foreground">Memories & Stories</CardTitle>
-                          <CardDescription>Share moments that define your Patch experience.</CardDescription>
-                        </CardHeader>
-                        <FormField control={form.control} name="memorableEvents" render={({ field }) => (
-                          <FormItem><FormLabel>Memorable Events</FormLabel><FormControl><Textarea className="rounded-xl min-h-[100px]" placeholder="School events, trips, competitions, visiting dignitaries, national events you witnessed from school..." {...field} /></FormControl><FormMessage /></FormItem>
-                        )} />
-                        <FormField control={form.control} name="funnyStories" render={({ field }) => (
-                          <FormItem><FormLabel>Funny Stories / Mischief</FormLabel><FormControl><Textarea className="rounded-xl min-h-[100px]" placeholder="We won't tell... share the stories that made school life fun." {...field} /></FormControl><FormMessage /></FormItem>
-                        )} />
-                        <FormField control={form.control} name="traditionsRemembered" render={({ field }) => (
-                          <FormItem><FormLabel>School Traditions</FormLabel><FormControl><Textarea className="rounded-xl min-h-[80px]" placeholder="Traditions, rituals, customs — initiation of Form Ones, house traditions, end-of-year customs..." {...field} /></FormControl><FormMessage /></FormItem>
-                        )} />
-                        <FormField control={form.control} name="rivalryMemories" render={({ field }) => (
-                          <FormItem><FormLabel>Inter-School Rivalries</FormLabel><FormControl><Textarea className="rounded-xl min-h-[80px]" placeholder="Memorable matches and rivalries with Lenana, Alliance, St Mary's, Strathmore, etc." {...field} /></FormControl><FormMessage /></FormItem>
-                        )} />
-                        <FormField control={form.control} name="culturalEvents" render={({ field }) => (
-                          <FormItem><FormLabel>Cultural Events & Drama</FormLabel><FormControl><Textarea className="rounded-xl min-h-[80px]" placeholder="Drama festivals, music concerts, Swahili debates, cultural days, school plays..." {...field} /></FormControl><FormMessage /></FormItem>
-                        )} />
-                        <FormField control={form.control} name="religiousLife" render={({ field }) => (
-                          <FormItem><FormLabel>Religious & Spiritual Life</FormLabel><FormControl><Textarea className="rounded-xl min-h-[80px]" placeholder="CU meetings, Crusaders, Christian meetings, prayer meetings, speakers who visited..." {...field} /></FormControl><FormMessage /></FormItem>
-                        )} />
-                        <FormField control={form.control} name="significantChanges" render={({ field }) => (
-                          <FormItem><FormLabel>Significant Changes You Witnessed</FormLabel><FormControl><Textarea className="rounded-xl min-h-[80px]" placeholder="What changed during your time? New buildings, policy changes, historical events, name changes..." {...field} /></FormControl><FormMessage /></FormItem>
-                        )} />
-                      </motion.div>
-                    )}
-
-                    {/* Step 8: Achievements */}
-                    {currentStep === 8 && (
-                      <motion.div key="step8" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
-                        <CardHeader className="p-0 pb-4">
-                          <CardTitle className="font-display text-foreground">Achievements</CardTitle>
-                          <CardDescription>Tell us about your accomplishments in school and after.</CardDescription>
-                        </CardHeader>
-                        <FormField control={form.control} name="academicAchievements" render={({ field }) => (
-                          <FormItem><FormLabel>Academic Achievements</FormLabel><FormControl><Textarea className="rounded-xl min-h-[80px]" placeholder="KCSE/KACE results, awards, competitions won, university admissions..." {...field} /></FormControl><FormMessage /></FormItem>
-                        )} />
-                        <FormField control={form.control} name="sportsAchievements" render={({ field }) => (
-                          <FormItem><FormLabel>Sports Achievements</FormLabel><FormControl><Textarea className="rounded-xl min-h-[80px]" placeholder="Titles, records, notable games, national representation..." {...field} /></FormControl><FormMessage /></FormItem>
-                        )} />
-                        <FormField control={form.control} name="careerAchievements" render={({ field }) => (
-                          <FormItem><FormLabel>Career Achievements (Post-School)</FormLabel><FormControl><Textarea className="rounded-xl min-h-[80px]" placeholder="What have you accomplished since leaving the Patch?" {...field} /></FormControl><FormMessage /></FormItem>
-                        )} />
-                        <FormField control={form.control} name="adviceToCurrent" render={({ field }) => (
-                          <FormItem><FormLabel>Advice to Current Students</FormLabel><FormControl><Textarea className="rounded-xl min-h-[80px]" placeholder="What advice would you give to boys currently at Nairobi School?" {...field} /></FormControl><FormMessage /></FormItem>
-                        )} />
-                      </motion.div>
-                    )}
-
-                    {/* Step 9: Alumni Profile */}
-                    {currentStep === 9 && (
-                      <motion.div key="step9" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
-                        <CardHeader className="p-0 pb-4">
-                          <CardTitle className="font-display text-foreground">Notable Alumni Profile</CardTitle>
-                          <CardDescription>Help us build mini-profiles for the Alumni Roll of Honour section of the book. This is optional but very valuable.</CardDescription>
-                        </CardHeader>
-                        <div className="p-4 bg-secondary rounded-xl text-sm text-muted-foreground">
-                          <p className="font-medium text-foreground mb-2">Why we ask this:</p>
-                          <p>The book will feature a "Roll of Honour" with mini-profiles of notable alumni. If you or someone you know from school has made significant contributions in any field — public service, law, business, medicine, sport, arts — please share the details below.</p>
-                        </div>
-                        <FormField control={form.control} name="notability" render={({ field }) => (
-                          <FormItem><FormLabel>Field & Why Remembered</FormLabel><FormControl><Textarea className="rounded-xl min-h-[80px]" placeholder="e.g. Public Service — Served as Cabinet Secretary for Education. Or: Sport — Represented Kenya in rugby at international level." {...field} /></FormControl><FormMessage /></FormItem>
-                        )} />
-                        <FormField control={form.control} name="signatureContribution" render={({ field }) => (
-                          <FormItem><FormLabel>Signature Contribution / Major Achievement</FormLabel><FormControl><Textarea className="rounded-xl min-h-[80px]" placeholder="What is the single most notable achievement?" {...field} /></FormControl><FormMessage /></FormItem>
-                        )} />
-                        <FormField control={form.control} name="schoolConnection" render={({ field }) => (
-                          <FormItem><FormLabel>How Did Nairobi School Shape You?</FormLabel><FormControl><Textarea className="rounded-xl min-h-[80px]" placeholder="How did your time at the Patch influence your career, character, or life path?" {...field} /></FormControl><FormMessage /></FormItem>
-                        )} />
-                        <FormField control={form.control} name="legacyNote" render={({ field }) => (
-                          <FormItem><FormLabel>Legacy Note</FormLabel><FormControl><Textarea className="rounded-xl min-h-[60px]" placeholder="A concluding line or quote that captures your legacy or philosophy." {...field} /></FormControl><FormMessage /></FormItem>
-                        )} />
-                      </motion.div>
-                    )}
-
-                    {/* Step 10: Uploads & Extras */}
-                    {currentStep === 10 && (
-                      <motion.div key="step10" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
-                        <CardHeader className="p-0 pb-4">
-                          <CardTitle className="font-display text-foreground">Uploads & Extras</CardTitle>
-                          <CardDescription>Upload files and add any final comments.</CardDescription>
-                        </CardHeader>
-                        <FormField control={form.control} name="additionalComments" render={({ field }) => (
-                          <FormItem><FormLabel>Additional Comments</FormLabel><FormControl><Textarea className="rounded-xl min-h-[80px]" placeholder="Anything else you'd like to share that we haven't asked about..." {...field} /></FormControl><FormMessage /></FormItem>
-                        )} />
-                        {/* File Upload Section */}
-                        <div className="space-y-3">
-                          <FormLabel>Upload Photos, Videos, or Documents</FormLabel>
-                          <p className="text-sm text-muted-foreground">
-                            Share any photos, videos, PDFs, or other files that could help with the book. No limits on file size or number.
-                          </p>
-                          <div className="border-2 border-dashed border-border rounded-xl p-6 text-center hover:border-accent transition-colors">
-                            <Upload className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
-                            <label className="cursor-pointer">
-                              <span className="text-accent font-medium hover:underline">Click to upload files</span>
-                              <input type="file" multiple accept="image/*,video/*,.pdf,.doc,.docx,.xls,.xlsx" className="hidden" onChange={handleFileSelect} />
-                            </label>
-                            <p className="text-xs text-muted-foreground mt-1">Images, videos, PDFs, documents — any format welcome</p>
-                          </div>
-                          {uploadedFiles.length > 0 && (
-                            <div className="space-y-2">
-                              {uploadedFiles.map((file, i) => (
-                                <div key={i} className="flex items-center gap-3 p-3 bg-secondary rounded-xl">
-                                  <FileIcon className="h-4 w-4 text-muted-foreground shrink-0" />
-                                  <span className="text-sm truncate flex-1">{file.name}</span>
-                                  <span className="text-xs text-muted-foreground">{(file.size / 1024 / 1024).toFixed(1)} MB</span>
-                                  <button type="button" onClick={() => removeFile(i)} className="text-muted-foreground hover:text-destructive"><X className="h-4 w-4" /></button>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                        <div className="space-y-3">
-                          <label className="flex items-center gap-3 p-4 rounded-xl border border-border cursor-pointer hover:bg-secondary">
-                            <Checkbox checked={form.watch("hasPhotosToShare")} onCheckedChange={(v) => form.setValue("hasPhotosToShare", !!v)} />
-                            <span>I have additional photos I'd like to share for the book</span>
-                          </label>
-                          <label className="flex items-center gap-3 p-4 rounded-xl border border-border cursor-pointer hover:bg-secondary">
-                            <Checkbox checked={form.watch("willingToBeInterviewed")} onCheckedChange={(v) => form.setValue("willingToBeInterviewed", !!v)} />
-                            <span>I'm willing to be interviewed for the book</span>
-                          </label>
-                        </div>
-                      </motion.div>
-                    )}
-
-                    {/* Step 11: Final Submit */}
-                    {currentStep === 11 && (
-                      <motion.div key="step11" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
-                        <CardHeader className="p-0 pb-4">
-                          <CardTitle className="font-display text-foreground text-center">Ready to Submit?</CardTitle>
-                          <CardDescription className="text-center">Review your responses and submit when you're ready. You can go back to any step to make changes.</CardDescription>
-                        </CardHeader>
-                        <div className="bg-secondary/50 rounded-xl p-4 sm:p-6 space-y-3 text-sm">
-                          <p className="font-medium text-foreground">Summary:</p>
-                          <p className="text-muted-foreground">• Name: {form.watch("fullName") || "Not provided"}</p>
-                          <p className="text-muted-foreground">• House: {form.watch("house") || "Not selected"}</p>
-                          <p className="text-muted-foreground">• Years: {form.watch("admissionYear") || "?"} – {form.watch("graduationYear") || "?"}</p>
-                          <p className="text-muted-foreground">• Files uploaded: {uploadedFiles.length}</p>
-                        </div>
-                        <FormField control={form.control} name="consentToPublish" render={({ field }) => (
-                          <FormItem className="flex flex-row items-start gap-3 rounded-xl border border-border p-4">
-                            <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
-                            <div className="space-y-1 leading-none">
-                              <FormLabel>I agree to my story being published in the commemorative book.</FormLabel>
-                              <FormMessage />
-                            </div>
-                          </FormItem>
-                        )} />
-                      </motion.div>
-                    )}
-
-                  </AnimatePresence>
-
-                  <div className="mt-6 sm:mt-8 flex items-center justify-between gap-3">
-                    <Button type="button" variant="outline" onClick={prevStep} disabled={currentStep === 1} className="rounded-xl text-xs sm:text-sm px-3 sm:px-4">
-                      <ChevronLeft className="mr-1 sm:mr-2 h-4 w-4" /> Back
-                    </Button>
-                    {currentStep < steps.length ? (
-                      <Button type="button" variant="hero" onClick={nextStep} className="rounded-xl text-xs sm:text-sm px-3 sm:px-4">
-                        Next <ChevronRight className="ml-1 sm:ml-2 h-4 w-4" />
-                      </Button>
-                    ) : (
-                      <Button type="button" variant="hero" className="rounded-xl text-xs sm:text-sm px-3 sm:px-4" disabled={submitting || uploading} onClick={() => form.handleSubmit(onSubmit)()}>
-                        {uploading ? "Uploading..." : submitting ? "Submitting..." : <><Send className="mr-1 sm:mr-2 h-4 w-4" /> Submit</>}
-                      </Button>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            </form>
-          </Form>
         </motion.div>
-      </div>
-
-      {/* Simple footer */}
-      <div className="bg-primary py-6 text-center">
-        <p className="text-primary-foreground/60 text-sm">© {new Date().getFullYear()} Nairobi School Commemorative Book Project</p>
       </div>
     </div>
   );
