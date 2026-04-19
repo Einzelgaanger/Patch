@@ -14,7 +14,7 @@ import { fadeIn } from "@/lib/motion";
 import { supabase } from "@/integrations/supabase/client";
 import impalaLogo from "@/assets/impala-logo.png";
 
-const houses = ["Elgon", "Athi", "Serengeti", "Baringo", "Kirinyaga", "Marsabit", "Naivasha", "Tana"];
+const houses = ["Elgon", "Athi", "Serengeti", "Baringo", "Kirinyaga", "Marsabit", "Naivasha", "Tana", "Longonot"];
 const yearLabels = ["Year 1", "Year 2", "Year 3", "Year 4"];
 const leaderRoles = [
   { key: "headmaster", label: "Headmaster / Chief Principal" },
