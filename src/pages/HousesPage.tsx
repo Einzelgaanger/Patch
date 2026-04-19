@@ -50,6 +50,12 @@ const houses = [
     description: "Named after the Tana River, Kenya's longest river, representing our far-reaching influence.",
     sports: ["Football", "Cricket", "Basketball"],
   },
+  {
+    name: "Longonot",
+    oldName: "Longonot",
+    description: "Named after Mount Longonot, representing the volcanic strength and rising ambition of its members.",
+    sports: ["Rugby", "Athletics", "Swimming"],
+  },
 ];
 
 export default function HousesPage() {
@@ -63,9 +69,9 @@ export default function HousesPage() {
         </div>
         <div className="container mx-auto px-4 sm:px-6 text-center relative z-10">
           <div className="w-12 h-px sm:w-16 sm:h-0.5 bg-accent mx-auto mb-6 sm:mb-8" aria-hidden />
-          <h1 className="font-display text-4xl sm:text-5xl md:text-6xl font-bold text-primary-foreground mb-4 sm:mb-6">
-            The Eight Houses
-          </h1>
+            <h1 className="font-display text-4xl sm:text-5xl md:text-6xl font-bold text-primary-foreground mb-4 sm:mb-6">
+              The Nine Houses
+            </h1>
           <p className="text-primary-foreground/70 max-w-2xl mx-auto text-base sm:text-lg px-2">
             Each house is more than just a dormitory — it's a family. The friendly 
             rivalries and deep bonds formed here last a lifetime.
